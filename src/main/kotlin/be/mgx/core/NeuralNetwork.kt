@@ -1,13 +1,15 @@
 package be.mgx.core
 
 import be.mgx.core.math.Matrix
-import be.mgx.core.math.times
-import be.mgx.functions.ActivationFunction
 import be.mgx.util.LOG
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 class NeuralNetwork private constructor(private val layers: List<Layer>) {
+    @Transient
+    val metricData: MetricData = MetricData()
+
     fun fire(input: Matrix): Matrix {
         var currentLayer: Matrix = input
 
@@ -23,7 +25,8 @@ class NeuralNetwork private constructor(private val layers: List<Layer>) {
         expectedOutputs: List<Matrix>,
         learningRate: Float,
         errorFunction: ErrorFunction,
-        stopConditionFunction: StopFunction
+        stopConditionFunction: StopFunction,
+        metricCallbackFunctions: List<MetricCallback> = listOf()
     ) {
         var iteration = 0
         do {
@@ -34,6 +37,8 @@ class NeuralNetwork private constructor(private val layers: List<Layer>) {
                 val output = fire(input)
                 LOG.info("For input ${input.toString().trim()}, outputted ${output.toString().trim()} (expected ${expectedOutput.toString().trim()})")
                 errorFunction(expectedOutput, output, input, layers, learningRate)
+
+                metricCallbackFunctions.forEach { fn -> metricData.fn(input, output, expectedOutput, layers) }
             }
             iteration++
         } while (!stopConditionFunction())
