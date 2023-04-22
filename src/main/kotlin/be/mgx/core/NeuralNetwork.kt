@@ -26,19 +26,24 @@ class NeuralNetwork private constructor(private val layers: List<Layer>) {
         learningRate: Float,
         errorFunction: ErrorFunction,
         stopConditionFunction: StopFunction,
-        metricCallbackFunctions: List<MetricCallback> = listOf()
+        metricCallbackFunctions: List<MetricCallback> = listOf(),
+        batchSize: Int = 1
     ) {
         var iteration = 0
         do {
             LOG.info("Starting iteration $iteration -----------------------------")
             val inputOutput = inputs.zip(expectedOutputs)
 
+            var batchCount = 0
+
             for ((input, expectedOutput) in inputOutput) {
                 val output = fire(input)
                 LOG.info("For input ${input.toString().trim()}, outputted ${output.toString().trim()} (expected ${expectedOutput.toString().trim()})")
-                errorFunction(expectedOutput, output, input, layers, learningRate)
 
-                metricCallbackFunctions.forEach { fn -> metricData.fn(input, output, expectedOutput, layers) }
+                metricCallbackFunctions.forEach { fn -> metricData.fn(input, output, expectedOutput, layers, batchCount) }
+                //if (batchCount == batchSize - 1) {
+                    this.errorFunction(expectedOutput, output, input, layers, learningRate, batchCount++)
+                //}
             }
             iteration++
         } while (!stopConditionFunction())

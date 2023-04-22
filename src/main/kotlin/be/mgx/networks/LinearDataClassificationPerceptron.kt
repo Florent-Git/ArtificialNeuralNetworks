@@ -3,7 +3,6 @@ package be.mgx.networks
 import be.mgx.core.*
 import be.mgx.core.math.Matrix
 import be.mgx.functions.ActivationFunction
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.csv.Csv
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -15,16 +14,17 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.nio.charset.StandardCharsets
 
-@OptIn(ExperimentalSerializationApi::class)
-@Command(name = "logical-and", abbreviateSynopsis = true)
-class BasicAndPerceptron : IAbstractNetwork {
+@Command(name = "linear", abbreviateSynopsis = true)
+class LinearDataClassificationPerceptron : IAbstractNetwork {
+    private val perceptron: BasicAndPerceptron = BasicAndPerceptron()
+
     @Command
     override fun init(
         @Option(names = ["-m", "--model"])
         model: File,
     ): Int {
         val network = NeuralNetwork.createNetwork(
-            Layers.createLayer(2, 1, ActivationFunction.RELU)
+            Layers.createLayer(2, 1, ActivationFunction.LINEAR)
         )
 
         val fileStream = FileOutputStream(model)
@@ -53,9 +53,11 @@ class BasicAndPerceptron : IAbstractNetwork {
         network.train(
             X.map { x -> Matrix.createMatrix(1, 3) { x } },
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
-            1f,
-            ErrorFunctions.basicErrorFunction(),
-            StopFunctions.iterationStopFunction(iterations)
+            .2f,
+            ErrorFunctions.simpleGradientError(X.size),
+            StopFunctions.iterationStopFunction(iterations),
+            listOf(computeMSE),
+            batchSize = X.size
         )
 
         saveNetworkModelToFile(network, modelFile)
@@ -99,8 +101,4 @@ class BasicAndPerceptron : IAbstractNetwork {
         val csvReader = Csv {}
         return csvReader.decodeFromString<List<List<Float>>>(dataString)
     }
-}
-
-fun main() {
-
 }

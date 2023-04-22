@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
+import kotlin.math.pow
 
 /**
  * Minimal matrix implementation for the sake of the project
@@ -14,6 +15,9 @@ data class Matrix(
     val cols: Int,
     private var _array: MutableList<Float> = mutableListOf()
 ) {
+    val array: List<Float>
+        get() = _array
+
     operator fun times(mat: Matrix): Matrix {
         if (this.cols != mat.rows && !isScalar()) {
             throw IllegalArgumentException("Cannot multiply a ${rows}x${cols} matrix with a ${mat.rows}x${mat.cols}")
@@ -124,6 +128,18 @@ data class Matrix(
         }
 
         return this[0, 0]
+    }
+
+    fun pow(power: Float): Matrix {
+        val result = this.copy()
+        result._array = _array.map { it.pow(power) }.toMutableList()
+        return result
+    }
+
+    operator fun div(n: Float): Matrix {
+        val result = this.copy()
+        result._array = _array.map { it / n }.toMutableList()
+        return result
     }
 
     companion object {

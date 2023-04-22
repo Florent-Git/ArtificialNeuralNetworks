@@ -11,12 +11,13 @@ repositories {
 }
 
 dependencies {
+    implementation(kotlin("reflect"))
     implementation("info.picocli:picocli:4.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
     implementation("de.brudaswen.kotlinx.serialization:kotlinx-serialization-csv:2.0.0")
 
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
-    implementation("ch.qos.logback:logback-classic:1.2.9")
+    implementation("ch.qos.logback:logback-classic:1.4.6")
 
     implementation("org.beryx:text-io:3.4.1")
 

@@ -9,7 +9,7 @@ object StopFunctions {
         var iteration = 0
         return {
             LOG.info("Done iteration ${iteration + 1}")
-            iteration++ == nbIterations
+            iteration++ == nbIterations - 1
         }
     }
 }

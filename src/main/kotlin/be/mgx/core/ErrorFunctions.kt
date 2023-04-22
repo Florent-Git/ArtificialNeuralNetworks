@@ -11,38 +11,43 @@ import be.mgx.util.LOG
  * @param layers The different layers of the NN
  * @param learningRate The learning rate of the NN
  */
-typealias ErrorFunction = (
+typealias ErrorFunction = NeuralNetwork.(
     expected: Matrix,
     output: Matrix,
     input: Matrix,
     layers: List<Layer>,
-    learningRate: Float
-) -> Boolean
+    learningRate: Float,
+    batchCount: Int
+) -> Unit
 
 object ErrorFunctions {
-    fun basicErrorFunction(
-        expected: Matrix,
-        output: Matrix,
-        input: Matrix,
-        layers: List<Layer>,
-        learningRate: Float
-    ): Boolean {
-        val error = expected - output
-        layers[0].weights = layers[0].weights + (learningRate * error * input).transpose()
-        return error.toScalar() != 0f
-    }
-
-    fun keepErrorCount(
-        errorFn: ErrorFunction
-    ): ErrorFunction {
+    fun basicErrorFunction(): ErrorFunction {
         var errorCount = 0
-        return { expected, output, input, layers, learningRate ->
-            val b = errorFn(expected, output, input, layers, learningRate)
-            if (b) {
+        return { expected, output, input, layers, learningRate, _ ->
+            val error = expected - output
+            layers[0].weights = layers[0].weights + (learningRate * error * input).transpose()
+            if (error.toScalar() != 0f) {
                 errorCount++
                 LOG.info("Errors: $errorCount")
             }
-            b
+        }
+    }
+    fun simpleGradientError(batchSize: Int): ErrorFunction {
+        var correctingTerms: Matrix? = null
+
+        return { expected, output, input, layers, learningRate, batchCount ->
+            if (correctingTerms == null) {
+                correctingTerms = Matrix.createMatrix(layers[0].weights.cols, layers[0].weights.rows)
+            }
+
+            correctingTerms = correctingTerms!! + ((expected - output) * learningRate) * input
+
+            if (batchCount == batchSize - 1) {
+                LOG.info("Correcting terms: ${correctingTerms.toString().trim()}")
+                layers[0].weights = layers[0].weights + (correctingTerms!!).transpose()
+
+                correctingTerms = null
+            }
         }
     }
 }
