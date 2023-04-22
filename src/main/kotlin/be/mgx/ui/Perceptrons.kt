@@ -1,14 +1,16 @@
 package be.mgx.ui
 
+import be.mgx.networks.AdalineAndPerceptron
 import be.mgx.networks.BasicAndPerceptron
-import be.mgx.networks.LinearDataClassificationPerceptron
+import be.mgx.networks.GradientAndPerceptron
 import picocli.CommandLine
 
 @CommandLine.Command(
     name = "perceptron",
     subcommands = [
         BasicAndPerceptron::class,
-        LinearDataClassificationPerceptron::class
+        GradientAndPerceptron::class,
+        AdalineAndPerceptron::class
     ]
 )
 object Perceptrons: AbstractCommandRunner<PerceptronCommands, AbstractNetworkRunner>(PerceptronCommands::class.java), LessonExample
@@ -18,9 +20,8 @@ enum class PerceptronCommands(
     override val commandClassProvider: () -> AbstractNetworkRunner
 ): ICommandEnum<AbstractNetworkRunner> {
     BASICAND("Opérateur logique ET", { AbstractNetworkRunner(BasicAndPerceptron()) }),
-    LINEARCLASS("Classification de données linéairement séparables", { AbstractNetworkRunner(
-        LinearDataClassificationPerceptron()
-    ) })
+    GRADIENTAND("Opérateur logique ET avec Gradient", { AbstractNetworkRunner(GradientAndPerceptron()) }),
+    ADALINEAND("Opérateur logique ET avec Adaline", { AbstractNetworkRunner(AdalineAndPerceptron()) })
     ;
 
     override fun toString(): String {

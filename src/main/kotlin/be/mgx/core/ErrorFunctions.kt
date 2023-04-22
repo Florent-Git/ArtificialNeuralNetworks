@@ -42,7 +42,7 @@ object ErrorFunctions {
 
             correctingTerms = correctingTerms!! + ((expected - output) * learningRate) * input
 
-            if (batchCount == batchSize - 1) {
+            if (((batchCount + 1) % batchSize) == 0) {
                 LOG.info("Correcting terms: ${correctingTerms.toString().trim()}")
                 layers[0].weights = layers[0].weights + (correctingTerms!!).transpose()
 

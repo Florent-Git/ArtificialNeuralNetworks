@@ -26,8 +26,7 @@ class NeuralNetwork private constructor(private val layers: List<Layer>) {
         learningRate: Float,
         errorFunction: ErrorFunction,
         stopConditionFunction: StopFunction,
-        metricCallbackFunctions: List<MetricCallback> = listOf(),
-        batchSize: Int = 1
+        metricCallbackFunctions: List<MetricCallback> = listOf()
     ) {
         var iteration = 0
         do {
@@ -41,9 +40,7 @@ class NeuralNetwork private constructor(private val layers: List<Layer>) {
                 LOG.info("For input ${input.toString().trim()}, outputted ${output.toString().trim()} (expected ${expectedOutput.toString().trim()})")
 
                 metricCallbackFunctions.forEach { fn -> metricData.fn(input, output, expectedOutput, layers, batchCount) }
-                //if (batchCount == batchSize - 1) {
-                    this.errorFunction(expectedOutput, output, input, layers, learningRate, batchCount++)
-                //}
+                this.errorFunction(expectedOutput, output, input, layers, learningRate, batchCount++)
             }
             iteration++
         } while (!stopConditionFunction())

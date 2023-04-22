@@ -14,10 +14,8 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.nio.charset.StandardCharsets
 
-@Command(name = "linear", abbreviateSynopsis = true)
-class LinearDataClassificationPerceptron : IAbstractNetwork {
-    private val perceptron: BasicAndPerceptron = BasicAndPerceptron()
-
+@Command(name = "logical-and-gradient", abbreviateSynopsis = true)
+class GradientAndPerceptron : IAbstractNetwork {
     @Command
     override fun init(
         @Option(names = ["-m", "--model"])
@@ -56,8 +54,7 @@ class LinearDataClassificationPerceptron : IAbstractNetwork {
             .2f,
             ErrorFunctions.simpleGradientError(X.size),
             StopFunctions.iterationStopFunction(iterations),
-            listOf(computeMSE),
-            batchSize = X.size
+            listOf(computeMSE)
         )
 
         saveNetworkModelToFile(network, modelFile)
