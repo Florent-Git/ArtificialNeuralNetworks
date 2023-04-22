@@ -10,4 +10,5 @@ data class MetricData(
     fun <T : Any> set(key: String, value: T) {
         map[key] = value
     }
+
 }

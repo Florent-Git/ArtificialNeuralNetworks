@@ -22,6 +22,8 @@ dependencies {
     implementation("org.beryx:text-io:3.4.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.0")
+
+    implementation("org.jfree:jfreechart:1.5.3")
 }
 
 tasks.test {

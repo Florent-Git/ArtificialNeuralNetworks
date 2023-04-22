@@ -54,7 +54,6 @@ class AdalineAndPerceptron : IAbstractNetwork {
             .03f,
             ErrorFunctions.simpleGradientError(1),
             StopFunctions.iterationStopFunction(iterations),
-            listOf(computeMSE)
         )
 
         saveNetworkModelToFile(network, modelFile)

@@ -3,6 +3,8 @@ package be.mgx.networks
 import be.mgx.core.*
 import be.mgx.core.math.Matrix
 import be.mgx.functions.ActivationFunction
+import be.mgx.util.GraphBuilder
+import be.mgx.util.GraphTypes
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.csv.Csv
 import kotlinx.serialization.decodeFromString
@@ -55,10 +57,25 @@ class BasicAndPerceptron : IAbstractNetwork {
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
             1f,
             ErrorFunctions.basicErrorFunction(),
-            StopFunctions.iterationStopFunction(iterations)
+            StopFunctions.iterationStopFunction(iterations),
+            listOf(saveLayerWeights)
         )
 
         saveNetworkModelToFile(network, modelFile)
+
+        val inputs = mutableListOf<ArrayList<Float>>()
+
+        for (arrayList in model) {
+            val newArrayList = arrayListOf(arrayList[0], arrayList[1])
+            inputs.add(newArrayList)
+        }
+
+        val graphBuilder = GraphBuilder(GraphTypes.BASICANDPERCEPTRON,
+            network.metricData.get("layerWeights")!!,
+            inputs)
+        graphBuilder.drawGraph()
+
+        readlnOrNull()
 
         return 0
     }
@@ -99,8 +116,4 @@ class BasicAndPerceptron : IAbstractNetwork {
         val csvReader = Csv {}
         return csvReader.decodeFromString<List<List<Float>>>(dataString)
     }
-}
-
-fun main() {
-
 }
