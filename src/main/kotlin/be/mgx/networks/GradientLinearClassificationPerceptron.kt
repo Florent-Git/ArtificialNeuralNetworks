@@ -6,26 +6,23 @@ import be.mgx.functions.ActivationFunction
 import be.mgx.util.retrieveDataFromCsv
 import be.mgx.util.retrieveNetworkModelFromFile
 import be.mgx.util.saveNetworkModelToFile
-import kotlinx.serialization.csv.Csv
-import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
 import picocli.CommandLine.*
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.nio.charset.StandardCharsets
 
-@Command(name = "logical-and-gradient", abbreviateSynopsis = true)
-class GradientAndPerceptron : IAbstractNetwork {
+@OptIn(ExperimentalSerializationApi::class)
+@Command(name = "linear-classification-gradient", abbreviateSynopsis = true)
+class GradientLinearClassificationPerceptron: IAbstractNetwork {
     @Command
     override fun init(
         @Option(names = ["-m", "--model"])
         model: File,
     ): Int {
         val network = NeuralNetwork.createNetwork(
-            Layers.createLayer(2, 1, ActivationFunction.LINEAR)
+            Layers.createLayer(2, 1, ActivationFunction.RELU)
         )
 
         val fileStream = FileOutputStream(model)
@@ -52,9 +49,9 @@ class GradientAndPerceptron : IAbstractNetwork {
         network.train(
             X.map { x -> Matrix.createMatrix(1, 3) { x } },
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
-            .2f,
+            0.0011f,
             ErrorFunctions.simpleGradientError(X.size),
-            StopFunctions.iterationStopFunction(49),
+            StopFunctions.iterationStopFunction(402)
         )
 
         saveNetworkModelToFile(network, modelFile)

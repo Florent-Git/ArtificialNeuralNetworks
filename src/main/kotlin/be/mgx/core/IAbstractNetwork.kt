@@ -15,8 +15,7 @@ interface IAbstractNetwork {
      */
     fun train(
         modelFile: File,
-        dataFile: File,
-        iterations: Int
+        dataFile: File
     ): Int
 
     /**

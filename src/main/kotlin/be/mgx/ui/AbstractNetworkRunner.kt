@@ -30,10 +30,8 @@ class AbstractNetworkRunner(
     fun train() {
         val modelFile = getFile("Model file path")
         val dataFile = getFile("Data file path")
-        val iterationCount = textIO.newIntInputReader()
-            .read("Number of iterations")
 
-        train(modelFile, dataFile, iterationCount)
+        train(modelFile, dataFile)
     }
 
     fun execute() {

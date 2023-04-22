@@ -3,8 +3,7 @@ package be.mgx.networks
 import be.mgx.core.*
 import be.mgx.core.math.Matrix
 import be.mgx.functions.ActivationFunction
-import be.mgx.util.GraphBuilder
-import be.mgx.util.GraphTypes
+import be.mgx.util.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.csv.Csv
 import kotlinx.serialization.decodeFromString
@@ -40,9 +39,7 @@ class BasicAndPerceptron : IAbstractNetwork {
         @Option(names = ["-m", "--model"])
         modelFile: File,
         @Option(names = ["-d", "--data"], description = ["Input file containing the training data"])
-        dataFile: File,
-        @Option(names = ["-I", "--iterations"], description = ["Number of iterations"], defaultValue = "10")
-        iterations: Int
+        dataFile: File
     ): Int {
         val network = retrieveNetworkModelFromFile(modelFile)
         val model = retrieveDataFromCsv(dataFile)
@@ -57,7 +54,7 @@ class BasicAndPerceptron : IAbstractNetwork {
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
             1f,
             ErrorFunctions.basicErrorFunction(),
-            StopFunctions.iterationStopFunction(iterations),
+            StopFunctions.iterationStopFunction(6),
             listOf(saveLayerWeights)
         )
 
@@ -95,25 +92,5 @@ class BasicAndPerceptron : IAbstractNetwork {
         println("Output: $output")
 
         return 0
-    }
-
-    private fun retrieveNetworkModelFromFile(model: File): NeuralNetwork {
-        return FileInputStream(model).use { stream ->
-            Json.decodeFromStream<NeuralNetwork>(stream)
-        }
-    }
-
-    private fun saveNetworkModelToFile(network: NeuralNetwork, model: File) {
-        FileOutputStream(model).use { stream ->
-            Json.encodeToStream<NeuralNetwork>(network, stream)
-        }
-    }
-
-    private fun retrieveDataFromCsv(dataFile: File): List<List<Float>> {
-        val dataStream = FileInputStream(dataFile)
-        val dataString = String(dataStream.readAllBytes(), StandardCharsets.UTF_8)
-
-        val csvReader = Csv {}
-        return csvReader.decodeFromString<List<List<Float>>>(dataString)
     }
 }
