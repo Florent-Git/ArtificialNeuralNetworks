@@ -50,7 +50,7 @@ class BasicAndPerceptron : IAbstractNetwork {
             1.0,
             ErrorFunctions.basicErrorFunction(),
             StopFunctions.iterationStopFunction(6),
-            listOf(saveLayerWeights)
+            listOf(saveLayerWeights, meanSquareError())
         )
 
         saveNetworkModelToFile(network, modelFile)

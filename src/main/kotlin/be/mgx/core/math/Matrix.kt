@@ -1,6 +1,7 @@
 package be.mgx.core.math
 
 import kotlinx.serialization.Serializable
+import kotlin.math.pow
 
 /**
  * Minimal matrix implementation for the sake of the project
@@ -130,6 +131,16 @@ data class Matrix(
         val result = this.copy()
         result._array = _array.map { it / n }.toMutableList()
         return result
+    }
+
+    fun pow(i: Double): Matrix {
+        val result = this.copy()
+        result._array = _array.map { it.pow(i) }.toMutableList()
+        return result
+    }
+
+    fun sum(): Double {
+        return _array.sum()
     }
 
     companion object {

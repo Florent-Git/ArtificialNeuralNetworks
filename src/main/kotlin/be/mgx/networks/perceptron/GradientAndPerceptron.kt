@@ -50,7 +50,8 @@ class GradientAndPerceptron : IAbstractNetwork {
             .2,
             ErrorFunctions.simpleGradientError(X.size),
             StopFunctions.iterationStopFunction(49),
-            listOf(saveLayerWeights)
+            listOf(saveLayerWeights, meanSquareError()),
+            X.size
         )
 
         saveNetworkModelToFile(network, modelFile)

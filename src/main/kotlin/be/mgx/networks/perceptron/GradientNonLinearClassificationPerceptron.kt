@@ -50,7 +50,8 @@ class GradientNonLinearClassificationPerceptron: IAbstractNetwork {
             0.0015,
             ErrorFunctions.simpleGradientError(X.size),
             StopFunctions.iterationStopFunction(1000),
-            listOf(saveLayerWeights)
+            listOf(saveLayerWeights, meanSquareError()),
+            4
         )
 
         saveNetworkModelToFile(network, modelFile)

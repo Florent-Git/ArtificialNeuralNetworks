@@ -50,7 +50,7 @@ class AdalineLinearClassificationPerceptron: IAbstractNetwork {
             0.012,
             ErrorFunctions.simpleGradientError(1),
             StopFunctions.iterationStopFunction(92),
-            listOf(saveLayerWeights)
+            listOf(saveLayerWeights, meanSquareError())
         )
 
         saveNetworkModelToFile(network, modelFile)

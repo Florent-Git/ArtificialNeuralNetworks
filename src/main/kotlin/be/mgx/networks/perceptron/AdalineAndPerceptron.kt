@@ -50,7 +50,7 @@ class AdalineAndPerceptron : IAbstractNetwork {
             .03,
             ErrorFunctions.simpleGradientError(1),
             StopFunctions.iterationStopFunction(202),
-            listOf(saveLayerWeights)
+            listOf(saveLayerWeights, meanSquareError())
         )
 
         saveNetworkModelToFile(network, modelFile)
