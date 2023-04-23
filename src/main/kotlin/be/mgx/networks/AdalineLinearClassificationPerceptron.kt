@@ -22,7 +22,7 @@ class AdalineLinearClassificationPerceptron: IAbstractNetwork {
         model: File,
     ): Int {
         val network = NeuralNetwork.createNetwork(
-            Layers.createLayer(2, 1, ActivationFunction.RELU)
+            Layers.createLayer(2, 1, ActivationFunction.LINEAR)
         )
 
         val fileStream = FileOutputStream(model)
