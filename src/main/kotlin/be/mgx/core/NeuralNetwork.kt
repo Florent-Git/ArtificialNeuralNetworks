@@ -39,8 +39,8 @@ class NeuralNetwork private constructor(private val layers: List<Layer>) {
                 val output = fire(input)
                 LOG.info("For input ${input.toString().trim()}, outputted ${output.toString().trim()} (expected ${expectedOutput.toString().trim()})")
 
-                metricCallbackFunctions.forEach { fn -> metricData.fn(input, output, expectedOutput, layers, batchCount, inputOutput.size) }
                 this.errorFunction(expectedOutput, output, input, layers, learningRate, batchCount)
+                metricCallbackFunctions.forEach { fn -> metricData.fn(input, output, expectedOutput, layers, batchCount, inputOutput.size) }
 
                 batchCount++
             }

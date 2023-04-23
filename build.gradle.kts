@@ -38,8 +38,8 @@ enum class Lesson {
 
     override fun toString(): String {
         return super.toString()
-            .replace("_", "-")
-            .lowercase()
+            .replace("_", "-").toLowerCase()
+//            .lowercase()
     }
 }
 
@@ -50,8 +50,8 @@ enum class Operations {
 
     override fun toString(): String {
         return super.toString()
-            .replace("_", "-")
-            .lowercase()
+            .replace("_", "-").toLowerCase()
+//            .lowercase()
     }
 }
 
@@ -68,8 +68,8 @@ enum class Types(
 
     override fun toString(): String {
         return super.toString()
-            .replace("_", "-")
-            .lowercase()
+            .replace("_", "-").toLowerCase()
+//            .lowercase()
     }
 }
 

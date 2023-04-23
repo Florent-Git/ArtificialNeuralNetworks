@@ -14,6 +14,7 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Rectangle
 import java.awt.geom.Ellipse2D
+import kotlin.math.pow
 
 class GraphBuilder(
     private val graphType: GraphTypes,
@@ -25,11 +26,12 @@ class GraphBuilder(
         get() = layers.map { it.array }
 
     fun drawGraph() {
-
-
         val chart: JFreeChart = when(graphType){
             GraphTypes.BASICANDPERCEPTRON -> drawSimpleANDPerceptron()
-            GraphTypes.LINEARSEPARATION -> linearSeparation()
+            GraphTypes.ANDPERCEPTRONGRAD -> drawSimpleANDPerceptronGrad()
+            GraphTypes.ANDPERCEPTRONADALINE -> drawSimpleANDPerceptronAda()
+            GraphTypes.LINEARSEPARATIONGRAD -> linearSeparationGradient()
+            GraphTypes.LINEARSEPARATIONADALINE -> linearSeparationAdaline()
             GraphTypes.NONLINEARSEPARATION -> nonLinearSeparation()
             GraphTypes.LINEARREGRESSION -> linearRegression()
             GraphTypes.THREECLASSCLASSIFICATION -> threeClassClassification()
@@ -66,41 +68,96 @@ class GraphBuilder(
         return buildChart(renderer, "Simple Perceptron")
     }
 
-    private fun drawInputs(renderer: XYLineAndShapeRenderer) {
+    private fun drawSimpleANDPerceptronGrad(): JFreeChart {
+        val renderer = XYLineAndShapeRenderer()
+        var it = 1
+
+        // Draw points
         for ((pointsIt, input) in inputs.withIndex()) {
             addPoint("Point $pointsIt", input[0], input[1])
             renderer.setSeriesPaint(pointsIt, Color.BLACK)
             renderer.setSeriesStroke(pointsIt, BasicStroke(5.0f))
             renderer.setSeriesShape(pointsIt, Ellipse2D.Double(0.0, 0.0, 3.0, 3.0))
         }
+
+        // Draw lines
+//        weights.forEach { layer ->
+//            addLine(layer[0], layer[1], layer[2], "Iteration $it")
+//            it++
+//        }
+        val myWeights = weights.last()
+        addLine(myWeights[0], myWeights[1], myWeights[2], "My line")
+
+        return buildChart(renderer, "Simple Perceptron with Gradient Descent")
     }
 
-    private fun linearSeparation(): JFreeChart {
+    private fun drawSimpleANDPerceptronAda(): JFreeChart {
+        val renderer = XYLineAndShapeRenderer()
+        var it = 1
+
+        // Draw points
+        for ((pointsIt, input) in inputs.withIndex()) {
+            addPoint("Point $pointsIt", input[0], input[1])
+            renderer.setSeriesPaint(pointsIt, Color.BLACK)
+            renderer.setSeriesStroke(pointsIt, BasicStroke(5.0f))
+            renderer.setSeriesShape(pointsIt, Ellipse2D.Double(0.0, 0.0, 3.0, 3.0))
+        }
+
+        // Draw lines
+        val myWeights = weights.last()
+        addLine(myWeights[0], myWeights[1], myWeights[2], "My line")
+
+        return buildChart(renderer, "Simple Perceptron with ADALINE")
+    }
+
+    private fun linearSeparationGradient(): JFreeChart {
         val renderer = XYLineAndShapeRenderer()
 
         // Draw points
         for ((pointsIt, input) in inputs.withIndex()) {
             addPoint("Point $pointsIt", input[0], input[1])
-            if (input[3] == 1.0) {
+            if (input[2] == 1.0) {
                 // Class A
-                renderer.setSeriesPaint(pointsIt, Color.GREEN)
-                renderer.setSeriesShape(pointsIt, Ellipse2D.Double(0.0, 0.0, 3.0, 3.0))
+                renderer.setSeriesPaint(pointsIt, Color.BLUE)
+                renderer.setSeriesShape(pointsIt, Ellipse2D.Double(0.0, 0.0, 5.0, 5.0))
             } else {
                 // Class B
                 renderer.setSeriesPaint(pointsIt, Color.RED)
-                renderer.setSeriesShape(pointsIt, Rectangle(0, 0, 3, 3))
+                renderer.setSeriesShape(pointsIt, Rectangle(0, 0, 5, 5))
             }
             renderer.setSeriesStroke(pointsIt, BasicStroke(5.0f))
         }
 
         //Draw lines
-//        var it = 1
-//        layers.forEach { layer ->
-//            addLine(layer[0], layer[1], layer[2], "Iteration $it")
-//            it++
-//        }
+        val myWeights = weights.last()
+        addLine(myWeights[0], myWeights[1], myWeights[2], "My line")
 
-        return buildChart(renderer, "Classification of separable linear data")
+        return buildChart(renderer, "Classification of separable linear data with Gradient")
+    }
+
+    private fun linearSeparationAdaline(): JFreeChart {
+        val renderer = XYLineAndShapeRenderer()
+
+        // Draw points
+        for ((pointsIt, input) in inputs.withIndex()) {
+            addPoint("Point $pointsIt", input[0], input[1])
+            if (input[2] == 1.0) {
+                // Class A
+                renderer.setSeriesPaint(pointsIt, Color.BLUE)
+                renderer.setSeriesShape(pointsIt, Ellipse2D.Double(0.0, 0.0, 5.0, 5.0))
+            } else {
+                // Class B
+                renderer.setSeriesPaint(pointsIt, Color.RED)
+                renderer.setSeriesShape(pointsIt, Rectangle(0, 0, 5, 5))
+            }
+            renderer.setSeriesStroke(pointsIt, BasicStroke(5.0f))
+        }
+
+        //Draw lines
+        val myWeights = weights.last()
+        addLine(myWeights[0], myWeights[1], myWeights[2], "My line")
+
+        return buildChart(renderer, "Classification of separable linear data with Adaline")
     }
 
     private fun nonLinearSeparation(): JFreeChart {
@@ -166,6 +223,16 @@ class GraphBuilder(
     private fun nonLinearRegression(): JFreeChart {
         val renderer = XYLineAndShapeRenderer()
 
+        val series = XYSeries("Power[x,3]-2x")
+
+        for (i in -100..100) {
+            val x = i.toDouble() / 10.0
+            val y = x.pow(3) - 2 * x
+            series.add(x, y)
+        }
+
+        dataset.addSeries(series)
+
         return buildChart(renderer, "Non linear regression")
     }
 
@@ -180,7 +247,6 @@ class GraphBuilder(
     private fun addPoint(label: String?, x: Double, y: Double) {
         val series = XYSeries(label)
         series.add(x, y)
-//        series.add(x, y)
         dataset.addSeries(series)
     }
 
@@ -218,8 +284,8 @@ class GraphBuilder(
         val domainAxis: ValueAxis = plot.domainAxis
         val rangeAxis: ValueAxis = plot.rangeAxis
 
-        domainAxis.setRange(-10.0, 10.0)
-        rangeAxis.setRange(-10.0, 10.0)
+        domainAxis.setRange(-5.0, 8.0)
+        rangeAxis.setRange(-5.0, 12.0)
 
         plot.renderer = renderer
 

@@ -3,9 +3,7 @@ package be.mgx.networks
 import be.mgx.core.*
 import be.mgx.core.math.Matrix
 import be.mgx.functions.ActivationFunction
-import be.mgx.util.retrieveDataFromCsv
-import be.mgx.util.retrieveNetworkModelFromFile
-import be.mgx.util.saveNetworkModelToFile
+import be.mgx.util.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToStream
@@ -51,10 +49,26 @@ class AdalineAndPerceptron : IAbstractNetwork {
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
             .03,
             ErrorFunctions.simpleGradientError(1),
-            StopFunctions.iterationStopFunction(92),
+            StopFunctions.iterationStopFunction(202),
+            listOf(saveLayerWeights)
         )
 
         saveNetworkModelToFile(network, modelFile)
+
+        val inputs = mutableListOf<ArrayList<Double>>()
+
+        for (arrayList in model) {
+            val newArrayList = arrayListOf(arrayList[0], arrayList[1])
+            inputs.add(newArrayList)
+        }
+
+        val graphBuilder = GraphBuilder(
+            GraphTypes.ANDPERCEPTRONADALINE,
+            network.metricData.get("layerWeights")!!,
+            inputs)
+        graphBuilder.drawGraph()
+
+        readlnOrNull()
 
         return 0
     }
