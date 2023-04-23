@@ -22,7 +22,7 @@ class GradientLinearClassificationPerceptron: IAbstractNetwork {
         model: File,
     ): Int {
         val network = NeuralNetwork.createNetwork(
-            Layers.createLayer(2, 1, ActivationFunction.LINEAR)
+            Layers.createLayer(2, 1, ActivationFunction.RELU)
         )
 
         val fileStream = FileOutputStream(model)

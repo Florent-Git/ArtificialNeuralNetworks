@@ -81,7 +81,7 @@ for (type in Types.values()) {
         tasks.create<JavaExec>("${type}_$operation") {
             group = type.lesson.toString()
 
-            val dataFile = "$dataFileDir/${type.dataFile}"
+            val dataFile = "$dataFileDir\\${type.dataFile}"
 
             classpath = project.the<SourceSetContainer>()["main"].runtimeClasspath
             mainClass.set("be.mgx.MainKt")
