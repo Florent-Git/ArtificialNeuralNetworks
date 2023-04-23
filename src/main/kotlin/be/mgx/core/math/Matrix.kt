@@ -126,6 +126,16 @@ data class Matrix(
         return this[0, 0]
     }
 
+    fun isNullMatrix(): Boolean {
+        return _array.all { it == 0.0 }
+    }
+
+    fun applyOnEach(function: (Double) -> Double): Matrix {
+        val result = this.copy()
+        result._array = this._array.map(function).toMutableList()
+        return result
+    }
+
     operator fun div(n: Double): Matrix {
         val result = this.copy()
         result._array = _array.map { it / n }.toMutableList()

@@ -21,17 +21,11 @@ typealias ErrorFunction = NeuralNetwork.(
 ) -> Unit
 
 object ErrorFunctions {
-    fun basicErrorFunction(): ErrorFunction {
-        var errorCount = 0
-        return { expected, output, input, layers, learningRate, _ ->
-            val error = expected - output
-            layers[0].weights = layers[0].weights + (learningRate * error * input).transpose()
-            if (error.toScalar() != 0.0) {
-                errorCount++
-                LOG.info("Errors: $errorCount")
-            }
-        }
+    val basicErrorFunction: ErrorFunction = { expected, output, input, layers, learningRate, _ ->
+        val error = expected - output
+        layers[0].weights = layers[0].weights + (learningRate * error * input).transpose()
     }
+
     fun simpleGradientError(batchSize: Int): ErrorFunction {
         var correctingTerms: Matrix? = null
 

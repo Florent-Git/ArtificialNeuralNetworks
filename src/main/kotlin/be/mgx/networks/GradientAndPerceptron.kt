@@ -51,7 +51,8 @@ class GradientAndPerceptron : IAbstractNetwork {
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
             .2,
             ErrorFunctions.simpleGradientError(X.size),
-            StopFunctions.iterationStopFunction(49),
+            StopFunctions.untilErrorCountIs { errorCount -> errorCount <= 0 },
+            listOf(countErrors(0))
         )
 
         saveNetworkModelToFile(network, modelFile)
