@@ -1,4 +1,4 @@
-package be.mgx.networks
+package be.mgx.networks.perceptron
 
 import be.mgx.core.*
 import be.mgx.core.math.Matrix
@@ -12,8 +12,8 @@ import java.io.File
 import java.io.FileOutputStream
 
 @OptIn(ExperimentalSerializationApi::class)
-@Command(name = "nonlinear-classification-gradient", abbreviateSynopsis = true)
-class GradientNonLinearClassificationPerceptron: IAbstractNetwork {
+@Command(name = "nonlinear-classification-adaline", abbreviateSynopsis = true)
+class AdalineNonLinearClassificationPerceptron: IAbstractNetwork {
     @Command
     override fun init(
         @Option(names = ["-m", "--model"])
@@ -48,7 +48,7 @@ class GradientNonLinearClassificationPerceptron: IAbstractNetwork {
             X.map { x -> Matrix.createMatrix(1, 3) { x } },
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
             0.0015,
-            ErrorFunctions.simpleGradientError(X.size),
+            ErrorFunctions.simpleGradientError(1),
             StopFunctions.iterationStopFunction(1000),
             listOf(saveLayerWeights)
         )
@@ -63,12 +63,13 @@ class GradientNonLinearClassificationPerceptron: IAbstractNetwork {
         }
 
         val graphBuilder = GraphBuilder(
-            GraphTypes.LINEARSEPARATIONGRAD,
+            GraphTypes.LINEARSEPARATIONADALINE,
             network.metricData.get("layerWeights")!!,
             inputs)
         graphBuilder.drawGraph()
 
         readlnOrNull()
+
 
         return 0
     }

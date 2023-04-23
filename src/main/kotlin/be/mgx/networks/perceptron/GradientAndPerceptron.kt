@@ -1,4 +1,4 @@
-package be.mgx.networks
+package be.mgx.networks.perceptron
 
 import be.mgx.core.*
 import be.mgx.core.math.Matrix
@@ -11,9 +11,9 @@ import picocli.CommandLine.*
 import java.io.File
 import java.io.FileOutputStream
 
-@OptIn(ExperimentalSerializationApi::class)
-@Command(name = "linear-classification-adaline", abbreviateSynopsis = true)
-class AdalineLinearClassificationPerceptron: IAbstractNetwork {
+@Command(name = "logical-and-gradient", abbreviateSynopsis = true)
+class GradientAndPerceptron : IAbstractNetwork {
+    @OptIn(ExperimentalSerializationApi::class)
     @Command
     override fun init(
         @Option(names = ["-m", "--model"])
@@ -47,9 +47,9 @@ class AdalineLinearClassificationPerceptron: IAbstractNetwork {
         network.train(
             X.map { x -> Matrix.createMatrix(1, 3) { x } },
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
-            0.012,
-            ErrorFunctions.simpleGradientError(1),
-            StopFunctions.iterationStopFunction(92),
+            .2,
+            ErrorFunctions.simpleGradientError(X.size),
+            StopFunctions.iterationStopFunction(49),
             listOf(saveLayerWeights)
         )
 
@@ -58,18 +58,17 @@ class AdalineLinearClassificationPerceptron: IAbstractNetwork {
         val inputs = mutableListOf<ArrayList<Double>>()
 
         for (arrayList in model) {
-            val newArrayList = arrayListOf(arrayList[0], arrayList[1], arrayList[2])
+            val newArrayList = arrayListOf(arrayList[0], arrayList[1])
             inputs.add(newArrayList)
         }
 
         val graphBuilder = GraphBuilder(
-            GraphTypes.LINEARSEPARATIONADALINE,
+            GraphTypes.ANDPERCEPTRONGRAD,
             network.metricData.get("layerWeights")!!,
             inputs)
         graphBuilder.drawGraph()
 
         readlnOrNull()
-
 
         return 0
     }

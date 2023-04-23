@@ -68,7 +68,9 @@ enum class Types(
     NONLINEAR_CLASSIFICATION_GRADIENT("table_2_10.csv", Lesson.PERCEPTRON, "10, -3"),
     NONLINEAR_CLASSIFICATION_ADALINE("table_2_10.csv", Lesson.PERCEPTRON, "10, -3"),
     LINEAR_REGRESSION_GRADIENT("table_2_11.csv", Lesson.PERCEPTRON, "10"),
-    LINEAR_REGRESSION_ADALINE("table_2_11.csv", Lesson.PERCEPTRON, "10")
+    LINEAR_REGRESSION_ADALINE("table_2_11.csv", Lesson.PERCEPTRON, "10"),
+    THREE_CLASS("table_3_1.csv", Lesson.PERCEPTRON_MONO, "-1, 3"),
+    FOUR_CLASS("table_3_5.csv", Lesson.PERCEPTRON_MONO, "1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,1")
     ;
 
     override fun toString(): String {

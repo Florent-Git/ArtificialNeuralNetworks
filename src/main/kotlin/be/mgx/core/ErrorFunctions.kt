@@ -40,10 +40,10 @@ object ErrorFunctions {
                 correctingTerms = Matrix.createMatrix(layers[0].weights.cols, layers[0].weights.rows)
             }
 
-            correctingTerms = correctingTerms!! + ((expected - output) * learningRate) * input
+            correctingTerms = correctingTerms!! + (((expected - output) * learningRate).transpose() * input)
 
             if (((batchCount + 1) % batchSize) == 0) {
-                LOG.info("Correcting terms: ${correctingTerms.toString().trim()}")
+                LOG.trace("Correcting terms: ${correctingTerms.toString().trim()}")
                 layers[0].weights = layers[0].weights + (correctingTerms!!).transpose()
 
                 correctingTerms = null

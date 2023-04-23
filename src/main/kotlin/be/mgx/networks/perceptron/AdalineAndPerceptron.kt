@@ -1,4 +1,4 @@
-package be.mgx.networks
+package be.mgx.networks.perceptron
 
 import be.mgx.core.*
 import be.mgx.core.math.Matrix

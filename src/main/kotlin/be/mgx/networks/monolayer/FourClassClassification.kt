@@ -1,9 +1,11 @@
-package be.mgx.networks
+package be.mgx.networks.monolayer
 
 import be.mgx.core.*
 import be.mgx.core.math.Matrix
 import be.mgx.functions.ActivationFunction
-import be.mgx.util.*
+import be.mgx.util.retrieveDataFromCsv
+import be.mgx.util.retrieveNetworkModelFromFile
+import be.mgx.util.saveNetworkModelToFile
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToStream
@@ -11,16 +13,16 @@ import picocli.CommandLine.*
 import java.io.File
 import java.io.FileOutputStream
 
-@Command(name = "logical-and-gradient", abbreviateSynopsis = true)
-class GradientAndPerceptron : IAbstractNetwork {
-    @OptIn(ExperimentalSerializationApi::class)
+@OptIn(ExperimentalSerializationApi::class)
+@Command(name = "four-class", abbreviateSynopsis = true)
+class FourClassClassification : IAbstractNetwork {
     @Command
     override fun init(
         @Option(names = ["-m", "--model"])
         model: File,
     ): Int {
         val network = NeuralNetwork.createNetwork(
-            Layers.createLayer(2, 1, ActivationFunction.LINEAR)
+            Layers.createLayer(25, 4, ActivationFunction.LINEAR)
         )
 
         val fileStream = FileOutputStream(model)
@@ -39,36 +41,24 @@ class GradientAndPerceptron : IAbstractNetwork {
         val network = retrieveNetworkModelFromFile(modelFile)
         val model = retrieveDataFromCsv(dataFile)
 
-        var (X, Y) = model.map { it.chunked(2) }
-            .transpose()
+        var (X, Y) = model.transpose()
+            .withIndex()
+            .groupBy { it.index <= 24 }
+            .map { it.value.map { v -> v.value } }
+            .map { it.transpose() }
 
         X = X.map { x -> listOf(1.0) + x } // Prepend 1.0 to make the matrix a 1x3 input matrix
 
         network.train(
-            X.map { x -> Matrix.createMatrix(1, 3) { x } },
-            Y.map { y -> Matrix.createMatrix(1, 1) { y } },
-            .2,
-            ErrorFunctions.simpleGradientError(X.size),
-            StopFunctions.iterationStopFunction(49),
+            X.map { x -> Matrix.createMatrix(1, 26) { x } },
+            Y.map { y -> Matrix.createMatrix(1, 4) { y } },
+            0.05,
+            ErrorFunctions.simpleGradientError(1),
+            StopFunctions.iterationStopFunction(70),
             listOf(saveLayerWeights)
         )
 
         saveNetworkModelToFile(network, modelFile)
-
-        val inputs = mutableListOf<ArrayList<Double>>()
-
-        for (arrayList in model) {
-            val newArrayList = arrayListOf(arrayList[0], arrayList[1])
-            inputs.add(newArrayList)
-        }
-
-        val graphBuilder = GraphBuilder(
-            GraphTypes.ANDPERCEPTRONGRAD,
-            network.metricData.get("layerWeights")!!,
-            inputs)
-        graphBuilder.drawGraph()
-
-        readlnOrNull()
 
         return 0
     }

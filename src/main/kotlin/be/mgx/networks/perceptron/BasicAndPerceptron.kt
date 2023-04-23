@@ -1,4 +1,4 @@
-package be.mgx.networks
+package be.mgx.networks.perceptron
 
 import be.mgx.core.*
 import be.mgx.core.math.Matrix
@@ -11,16 +11,16 @@ import picocli.CommandLine.*
 import java.io.File
 import java.io.FileOutputStream
 
-@Command(name = "linear-regression-gradient", abbreviateSynopsis = true)
-class GradientLinearRegressionPerceptron : IAbstractNetwork {
-    @OptIn(ExperimentalSerializationApi::class)
+@OptIn(ExperimentalSerializationApi::class)
+@Command(name = "logical-and", abbreviateSynopsis = true)
+class BasicAndPerceptron : IAbstractNetwork {
     @Command
     override fun init(
         @Option(names = ["-m", "--model"])
         model: File,
     ): Int {
         val network = NeuralNetwork.createNetwork(
-            Layers.createLayer(1, 1, ActivationFunction.LINEAR)
+            Layers.createLayer(2, 1, ActivationFunction.RELU)
         )
 
         val fileStream = FileOutputStream(model)
@@ -39,17 +39,17 @@ class GradientLinearRegressionPerceptron : IAbstractNetwork {
         val network = retrieveNetworkModelFromFile(modelFile)
         val model = retrieveDataFromCsv(dataFile)
 
-        var (X, Y) = model.map { it.chunked(1) }
+        var (X, Y) = model.map { it.chunked(2) }
             .transpose()
 
-        X = X.map { x -> listOf(1.0) + x } // Prepend 1.0 to make the matrix a 1x2 input matrix
+        X = X.map { x -> listOf(1.0) + x } // Prepend 1.0 to make the matrix a 1x3 input matrix
 
         network.train(
-            X.map { x -> Matrix.createMatrix(1, 2) { x } },
+            X.map { x -> Matrix.createMatrix(1, 3) { x } },
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
-            .000167,
-            ErrorFunctions.simpleGradientError(X.size),
-            StopFunctions.iterationStopFunction(4701),
+            1.0,
+            ErrorFunctions.basicErrorFunction(),
+            StopFunctions.iterationStopFunction(6),
             listOf(saveLayerWeights)
         )
 
@@ -62,8 +62,7 @@ class GradientLinearRegressionPerceptron : IAbstractNetwork {
             inputs.add(newArrayList)
         }
 
-        val graphBuilder = GraphBuilder(
-            GraphTypes.ANDPERCEPTRONGRAD,
+        val graphBuilder = GraphBuilder(GraphTypes.BASICANDPERCEPTRON,
             network.metricData.get("layerWeights")!!,
             inputs)
         graphBuilder.drawGraph()
