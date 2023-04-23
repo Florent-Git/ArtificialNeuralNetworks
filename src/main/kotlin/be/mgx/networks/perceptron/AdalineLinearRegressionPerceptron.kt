@@ -63,9 +63,11 @@ class AdalineLinearRegressionPerceptron : IAbstractNetwork {
         }
 
         val graphBuilder = GraphBuilder(
-            GraphTypes.ANDPERCEPTRONGRAD,
+            GraphTypes.LINEARREGRESSIONADALINE,
             network.metricData.get("layerWeights")!!,
-            inputs)
+            inputs,
+            network
+        )
         graphBuilder.drawGraph()
 
         readlnOrNull()

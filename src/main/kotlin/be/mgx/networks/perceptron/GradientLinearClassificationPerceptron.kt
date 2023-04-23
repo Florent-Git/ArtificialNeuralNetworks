@@ -65,7 +65,9 @@ class GradientLinearClassificationPerceptron: IAbstractNetwork {
         val graphBuilder = GraphBuilder(
             GraphTypes.LINEARSEPARATIONGRAD,
             network.metricData.get("layerWeights")!!,
-            inputs)
+            inputs,
+            network
+        )
         graphBuilder.drawGraph()
 
         readlnOrNull()

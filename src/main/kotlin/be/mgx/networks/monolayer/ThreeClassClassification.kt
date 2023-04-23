@@ -3,9 +3,7 @@ package be.mgx.networks.monolayer
 import be.mgx.core.*
 import be.mgx.core.math.Matrix
 import be.mgx.functions.ActivationFunction
-import be.mgx.util.retrieveDataFromCsv
-import be.mgx.util.retrieveNetworkModelFromFile
-import be.mgx.util.saveNetworkModelToFile
+import be.mgx.util.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToStream
@@ -59,6 +57,24 @@ class ThreeClassClassification : IAbstractNetwork {
         )
 
         saveNetworkModelToFile(network, modelFile)
+
+        val inputs = mutableListOf<ArrayList<Double>>()
+
+        for (arrayList in model) {
+            var classValue = 1.0
+            val index = arrayList.lastIndexOf(classValue).toDouble()
+            val newArrayList = arrayListOf(arrayList[0], arrayList[1], index)
+            inputs.add(newArrayList)
+        }
+
+        val graphBuilder = GraphBuilder(
+            GraphTypes.THREECLASSCLASSIFICATION,
+            network.metricData.get("layerWeights")!!,
+            inputs,
+            network)
+        graphBuilder.drawGraph()
+
+        readlnOrNull()
 
         return 0
     }

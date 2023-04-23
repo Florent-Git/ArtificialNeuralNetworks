@@ -65,7 +65,9 @@ class AdalineAndPerceptron : IAbstractNetwork {
         val graphBuilder = GraphBuilder(
             GraphTypes.ANDPERCEPTRONADALINE,
             network.metricData.get("layerWeights")!!,
-            inputs)
+            inputs,
+            network
+        )
         graphBuilder.drawGraph()
 
         readlnOrNull()

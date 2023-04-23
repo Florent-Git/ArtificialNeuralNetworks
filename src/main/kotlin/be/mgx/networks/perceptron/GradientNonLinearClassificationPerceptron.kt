@@ -63,9 +63,11 @@ class GradientNonLinearClassificationPerceptron: IAbstractNetwork {
         }
 
         val graphBuilder = GraphBuilder(
-            GraphTypes.LINEARSEPARATIONGRAD,
+            GraphTypes.NONLINEARSEPARATIONGRAD,
             network.metricData.get("layerWeights")!!,
-            inputs)
+            inputs,
+            network
+        )
         graphBuilder.drawGraph()
 
         readlnOrNull()

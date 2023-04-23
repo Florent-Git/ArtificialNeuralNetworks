@@ -63,9 +63,11 @@ class GradientLinearRegressionPerceptron : IAbstractNetwork {
         }
 
         val graphBuilder = GraphBuilder(
-            GraphTypes.ANDPERCEPTRONGRAD,
+            GraphTypes.LINEARREGRESSIONGRAD,
             network.metricData.get("layerWeights")!!,
-            inputs)
+            inputs,
+            network
+        )
         graphBuilder.drawGraph()
 
         readlnOrNull()

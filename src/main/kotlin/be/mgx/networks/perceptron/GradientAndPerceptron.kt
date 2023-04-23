@@ -65,7 +65,9 @@ class GradientAndPerceptron : IAbstractNetwork {
         val graphBuilder = GraphBuilder(
             GraphTypes.ANDPERCEPTRONGRAD,
             network.metricData.get("layerWeights")!!,
-            inputs)
+            inputs,
+            network
+        )
         graphBuilder.drawGraph()
 
         readlnOrNull()

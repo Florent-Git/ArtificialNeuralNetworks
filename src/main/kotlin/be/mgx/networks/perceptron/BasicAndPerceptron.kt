@@ -62,9 +62,12 @@ class BasicAndPerceptron : IAbstractNetwork {
             inputs.add(newArrayList)
         }
 
-        val graphBuilder = GraphBuilder(GraphTypes.BASICANDPERCEPTRON,
+        val graphBuilder = GraphBuilder(
+            GraphTypes.BASICANDPERCEPTRON,
             network.metricData.get("layerWeights")!!,
-            inputs)
+            inputs,
+            network
+        )
         graphBuilder.drawGraph()
 
         readlnOrNull()
