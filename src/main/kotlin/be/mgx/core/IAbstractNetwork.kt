@@ -23,6 +23,6 @@ interface IAbstractNetwork {
      */
     fun execute(
         model: File,
-        inputs: List<Float>
+        inputs: List<Double>
     ): Int
 }

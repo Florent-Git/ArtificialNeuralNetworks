@@ -14,12 +14,11 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Rectangle
 import java.awt.geom.Ellipse2D
-import kotlin.reflect.jvm.internal.impl.descriptors.java.JavaVisibilities.ProtectedStaticVisibility
 
 class GraphBuilder(
     private val graphType: GraphTypes,
     private val layers: List<Matrix>,
-    private val inputs: MutableList<ArrayList<Float>>
+    private val inputs: MutableList<ArrayList<Double>>
 ) {
     private val dataset = XYSeriesCollection()
     private val weights
@@ -82,7 +81,7 @@ class GraphBuilder(
         // Draw points
         for ((pointsIt, input) in inputs.withIndex()) {
             addPoint("Point $pointsIt", input[0], input[1])
-            if (input[3] == 1f) {
+            if (input[3] == 1.0) {
                 // Class A
                 renderer.setSeriesPaint(pointsIt, Color.GREEN)
                 renderer.setSeriesShape(pointsIt, Ellipse2D.Double(0.0, 0.0, 3.0, 3.0))
@@ -134,19 +133,19 @@ class GraphBuilder(
         val renderer = XYLineAndShapeRenderer()
 
         var points = 0
-        var i = -10f
-        while (i < 10f) {
-            var j = -10f
-            while (j < 10f) {
+        var i = -10.0
+        while (i < 10.0) {
+            var j = -10.0
+            while (j < 10.0) {
                 addPoint("$i$j", i, j)
                 renderer.setSeriesPaint(points, Color.BLACK)
                 renderer.setSeriesStroke(points, BasicStroke(5.0f))
                 renderer.setSeriesShape(points, Ellipse2D.Double(0.0,0.0, 3.0, 3.0))
 
-                j += 0.2.toFloat()
+                j += 0.2.toDouble()
                 points++
             }
-            i += 0.2f
+            i += 0.2
         }
 
         return buildChart(renderer, "XOR operator")
@@ -170,7 +169,7 @@ class GraphBuilder(
         return buildChart(renderer, "Non linear regression")
     }
 
-    private fun addLine(w0: Float, w1: Float, w2: Float, label: String) {
+    private fun addLine(w0: Double, w1: Double, w2: Double, label: String) {
         val series = XYSeries(label)
         val coords = findIntersectionPoints(w0, w1, w2)
         series.add(coords[0][0], coords[0][1])
@@ -178,24 +177,24 @@ class GraphBuilder(
         dataset.addSeries(series)
     }
 
-    private fun addPoint(label: String?, x: Float, y: Float) {
+    private fun addPoint(label: String?, x: Double, y: Double) {
         val series = XYSeries(label)
         series.add(x, y)
 //        series.add(x, y)
         dataset.addSeries(series)
     }
 
-    private fun findIntersectionPoints(w0: Float, w1: Float, w2: Float): Array<FloatArray> {
-        return if (w1 == 0.0F && w2 == 0.0F) {
-            arrayOf(floatArrayOf(10.0F, 10.0F), floatArrayOf(10.0F, 10.0F))
-        } else if (w1 == 0.0F) {
-            arrayOf(floatArrayOf((-10.0).toFloat(), -w0 / w2), floatArrayOf(10.0F, -w0 / w2))
-        } else if (w2 == 0.0F) {
-            arrayOf(floatArrayOf(-w0 / w1, 10.0F), floatArrayOf(-w0 / w1, (-10.0).toFloat()))
+    private fun findIntersectionPoints(w0: Double, w1: Double, w2: Double): Array<DoubleArray> {
+        return if (w1 == 0.0 && w2 == 0.0) {
+            arrayOf(doubleArrayOf(10.0, 10.0), doubleArrayOf(10.0, 10.0))
+        } else if (w1 == 0.0) {
+            arrayOf(doubleArrayOf((-10.0).toDouble(), -w0 / w2), doubleArrayOf(10.0, -w0 / w2))
+        } else if (w2 == 0.0) {
+            arrayOf(doubleArrayOf(-w0 / w1, 10.0), doubleArrayOf(-w0 / w1, (-10.0).toDouble()))
         } else {
             arrayOf(
-                floatArrayOf(-10.0F, ((-w0 - w1 * (-10.0)) / w2).toFloat()),
-                floatArrayOf(10.0F, ((-w0 - w1 * 10.0) / w2).toFloat())
+                doubleArrayOf(-10.0, ((-w0 - w1 * (-10.0)) / w2).toDouble()),
+                doubleArrayOf(10.0, ((-w0 - w1 * 10.0) / w2).toDouble())
             )
         }
     }

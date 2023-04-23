@@ -30,6 +30,79 @@ tasks.test {
     useJUnitPlatform()
 }
 
-//tasks.withType<KotlinCompile> {
-//    kotlinOptions.jvmTarget = "1.8"
-//}
+enum class Lesson {
+    PERCEPTRON,
+    PERCEPTRON_MONO,
+    PERCEPTRON_MULTI,
+    SIGN_LANG;
+
+    override fun toString(): String {
+        return super.toString()
+            .replace("_", "-")
+            .lowercase()
+    }
+}
+
+enum class Operations {
+    INIT,
+    TRAIN,
+    EXECUTE;
+
+    override fun toString(): String {
+        return super.toString()
+            .replace("_", "-")
+            .lowercase()
+    }
+}
+
+enum class Types(
+    val dataFile: String,
+    val lesson: Lesson,
+    val exampleInput: String
+) {
+    LOGICAL_AND("table_and_basic.csv", Lesson.PERCEPTRON, "1,1"),
+    LOGICAL_AND_GRADIENT("table_and_grad.csv", Lesson.PERCEPTRON, "1,1"),
+    LOGICAL_AND_ADALINE("table_and_grad.csv", Lesson.PERCEPTRON, "1,1"),
+    LINEAR_CLASSIFICATION_GRADIENT("table_2_9.csv", Lesson.PERCEPTRON, "10,-3"),
+    LINEAR_CLASSIFICATION_ADALINE("table_2_9.csv", Lesson.PERCEPTRON, "10,-3");
+
+    override fun toString(): String {
+        return super.toString()
+            .replace("_", "-")
+            .lowercase()
+    }
+}
+
+val modelFile: String by project
+val dataFileDir: String by project
+
+for (type in Types.values()) {
+    for (operation in Operations.values()) {
+        tasks.create<JavaExec>("${type}_$operation") {
+            group = type.lesson.toString()
+
+            val dataFile = "$dataFileDir\\${type.dataFile}"
+
+            classpath = project.the<SourceSetContainer>()["main"].runtimeClasspath
+            mainClass.set("be.mgx.MainKt")
+
+            val arguments = mutableListOf<String>()
+
+            arguments += type.lesson.toString()
+            arguments += type.toString()
+            arguments += operation.toString()
+            arguments += "--model"
+            arguments += modelFile
+
+            if (operation == Operations.TRAIN) {
+                arguments += "--data"
+                arguments += dataFile
+            }
+
+            if (operation == Operations.EXECUTE) arguments += type.exampleInput
+
+            standardInput = System.`in`
+            args(arguments)
+        }
+    }
+}

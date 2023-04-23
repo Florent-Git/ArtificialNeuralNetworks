@@ -16,7 +16,7 @@ typealias ErrorFunction = NeuralNetwork.(
     output: Matrix,
     input: Matrix,
     layers: List<Layer>,
-    learningRate: Float,
+    learningRate: Double,
     batchCount: Int
 ) -> Unit
 
@@ -26,7 +26,7 @@ object ErrorFunctions {
         return { expected, output, input, layers, learningRate, _ ->
             val error = expected - output
             layers[0].weights = layers[0].weights + (learningRate * error * input).transpose()
-            if (error.toScalar() != 0f) {
+            if (error.toScalar() != 0.0) {
                 errorCount++
                 LOG.info("Errors: $errorCount")
             }

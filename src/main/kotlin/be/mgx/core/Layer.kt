@@ -19,14 +19,14 @@ object Layers {
         nbOfInput: Int,
         nbOfOutput: Int,
         fn: ActivationFunction,
-        weightsInit: (Int) -> Float = { 0f }
+        weightsInit: (Int) -> Double = { 0.0 }
     ): Layer {
         return Layer(Matrix.createMatrix(nbOfInput + 1, nbOfOutput) { size -> List(size, weightsInit) }, fn)
     }
 }
 
 fun main() {
-    val matrix = Matrix.createMatrix(2, 3) { listOf(1f, 2f, 3f, 4f, 5f, 6f) }
+    val matrix = Matrix.createMatrix(2, 3) { listOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0) }
     println(Json.encodeToString<Matrix>(matrix))
 
     val layers = Layer(matrix, ActivationFunction.RELU)

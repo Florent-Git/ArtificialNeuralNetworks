@@ -6,19 +6,16 @@ import be.mgx.functions.ActivationFunction
 import be.mgx.util.retrieveDataFromCsv
 import be.mgx.util.retrieveNetworkModelFromFile
 import be.mgx.util.saveNetworkModelToFile
-import kotlinx.serialization.csv.Csv
-import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.encodeToStream
 import picocli.CommandLine.*
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.nio.charset.StandardCharsets
 
 @Command(name = "logical-and-gradient", abbreviateSynopsis = true)
 class GradientAndPerceptron : IAbstractNetwork {
+    @OptIn(ExperimentalSerializationApi::class)
     @Command
     override fun init(
         @Option(names = ["-m", "--model"])
@@ -47,12 +44,12 @@ class GradientAndPerceptron : IAbstractNetwork {
         var (X, Y) = model.map { it.chunked(2) }
             .transpose()
 
-        X = X.map { x -> listOf(1f) + x } // Prepend 1f to make the matrix a 1x3 input matrix
+        X = X.map { x -> listOf(1.0) + x } // Prepend 1.0 to make the matrix a 1x3 input matrix
 
         network.train(
             X.map { x -> Matrix.createMatrix(1, 3) { x } },
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
-            .2f,
+            .2,
             ErrorFunctions.simpleGradientError(X.size),
             StopFunctions.iterationStopFunction(49),
         )
@@ -67,7 +64,7 @@ class GradientAndPerceptron : IAbstractNetwork {
         @Option(names = ["-m", "--model"])
         model: File,
         @Parameters(description = ["Inputs (separated by commas) for the neural network"], split = ",")
-        inputs: List<Float>
+        inputs: List<Double>
     ): Int {
         val network = retrieveNetworkModelFromFile(model)
         val input = Matrix.createMatrix(1, inputs.size) { inputs }

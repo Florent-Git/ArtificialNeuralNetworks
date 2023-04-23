@@ -1,11 +1,7 @@
 package be.mgx.functions
 
-import be.mgx.oldCore.AbstractFunction
 import be.mgx.core.math.Matrix
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -13,9 +9,9 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 enum class ActivationFunction(
-    private val fn: (Float) -> Float
+    private val fn: (Double) -> Double
 ): AbstractFunction {
-    RELU({ if (it >= 0) 1f else 0f }),
+    RELU({ if (it >= 0) 1.0 else 0.0 }),
     LINEAR({ it });
 
     override operator fun invoke(input: Matrix): Matrix {

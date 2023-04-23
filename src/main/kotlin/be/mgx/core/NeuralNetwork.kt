@@ -23,7 +23,7 @@ class NeuralNetwork private constructor(private val layers: List<Layer>) {
     fun train(
         inputs: List<Matrix>,
         expectedOutputs: List<Matrix>,
-        learningRate: Float,
+        learningRate: Double,
         errorFunction: ErrorFunction,
         stopConditionFunction: StopFunction,
         metricCallbackFunctions: List<MetricCallback> = listOf()

@@ -36,7 +36,7 @@ class AbstractNetworkRunner(
 
     fun execute() {
         val modelFile = getFile("Model file path")
-        val inputs = textIO.newFloatInputReader()
+        val inputs = textIO.newDoubleInputReader()
             .readList("Inputs (seperated by commas)")
 
         execute(modelFile, inputs)

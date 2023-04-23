@@ -44,12 +44,12 @@ class AdalineLinearClassificationPerceptron: IAbstractNetwork {
         var (X, Y) = model.map { it.chunked(2) }
             .transpose()
 
-        X = X.map { x -> listOf(1f) + x } // Prepend 1f to make the matrix a 1x3 input matrix
+        X = X.map { x -> listOf(1.0) + x } // Prepend 1.0 to make the matrix a 1x3 input matrix
 
         network.train(
             X.map { x -> Matrix.createMatrix(1, 3) { x } },
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
-            0.012f,
+            0.012,
             ErrorFunctions.simpleGradientError(1),
             StopFunctions.iterationStopFunction(92)
         )
@@ -64,7 +64,7 @@ class AdalineLinearClassificationPerceptron: IAbstractNetwork {
         @Option(names = ["-m", "--model"])
         model: File,
         @Parameters(description = ["Inputs (separated by commas) for the neural network"], split = ",")
-        inputs: List<Float>
+        inputs: List<Double>
     ): Int {
         val network = retrieveNetworkModelFromFile(model)
         val input = Matrix.createMatrix(1, inputs.size) { inputs }
