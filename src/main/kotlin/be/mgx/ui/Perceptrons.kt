@@ -11,6 +11,10 @@ import picocli.CommandLine
         AdalineAndPerceptron::class,
         GradientLinearClassificationPerceptron::class,
         AdalineLinearClassificationPerceptron::class,
+        GradientNonLinearClassificationPerceptron::class,
+        AdalineNonLinearClassificationPerceptron::class,
+        GradientLinearRegressionPerceptron::class,
+        AdalineLinearRegressionPerceptron::class
     ]
 )
 object Perceptrons: AbstractCommandRunner<PerceptronCommands, AbstractNetworkRunner>(PerceptronCommands::class.java), LessonExample
@@ -24,8 +28,10 @@ enum class PerceptronCommands(
     ADALINEAND("Opérateur logique ET (ADALINE)", { AbstractNetworkRunner(AdalineAndPerceptron()) }),
     GRADIENTLINEARCLASS("Classification de données linéairement séparables (Gradient)", { AbstractNetworkRunner(GradientLinearClassificationPerceptron()) }),
     ADALINELINEARCLASS("Classification de données linéairement séparables (ADALINE)", { AbstractNetworkRunner(AdalineLinearClassificationPerceptron()) }),
-//    GRADIENTNONLINEARCLASS("Classification de données non linéairement séparables (Gradient)", { AbstractNetworkRunner() }),
-//    ADALINENONLINEARCLASS("Classification de données non linéairement spéarables (ADALINE)", { AbstractNetworkRunner() })
+    GRADIENTNONLINEARCLASS("Classification de données non linéairement séparables (Gradient)", { AbstractNetworkRunner(GradientNonLinearClassificationPerceptron()) }),
+    ADALINENONLINEARCLASS("Classification de données non linéairement spéarables (ADALINE)", { AbstractNetworkRunner(AdalineNonLinearClassificationPerceptron()) }),
+    GRADIENTLINEARREG("Régression linéaire (GRADIENT)", { AbstractNetworkRunner(GradientLinearRegressionPerceptron()) }),
+    ADALINELINEARREG("Régression linéaire (GRADIENT)", { AbstractNetworkRunner(AdalineLinearRegressionPerceptron()) })
     ;
 
     override fun toString(): String {
