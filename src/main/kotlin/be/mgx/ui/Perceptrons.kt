@@ -1,6 +1,6 @@
 package be.mgx.ui
 
-import be.mgx.networks.*
+import be.mgx.networks.perceptron.*
 import picocli.CommandLine
 
 @CommandLine.Command(
@@ -26,10 +26,18 @@ enum class PerceptronCommands(
     BASICAND("Opérateur logique ET", { AbstractNetworkRunner(BasicAndPerceptron()) }),
     GRADIENTAND("Opérateur logique ET (Gradient)", { AbstractNetworkRunner(GradientAndPerceptron()) }),
     ADALINEAND("Opérateur logique ET (ADALINE)", { AbstractNetworkRunner(AdalineAndPerceptron()) }),
-    GRADIENTLINEARCLASS("Classification de données linéairement séparables (Gradient)", { AbstractNetworkRunner(GradientLinearClassificationPerceptron()) }),
-    ADALINELINEARCLASS("Classification de données linéairement séparables (ADALINE)", { AbstractNetworkRunner(AdalineLinearClassificationPerceptron()) }),
-    GRADIENTNONLINEARCLASS("Classification de données non linéairement séparables (Gradient)", { AbstractNetworkRunner(GradientNonLinearClassificationPerceptron()) }),
-    ADALINENONLINEARCLASS("Classification de données non linéairement spéarables (ADALINE)", { AbstractNetworkRunner(AdalineNonLinearClassificationPerceptron()) }),
+    GRADIENTLINEARCLASS("Classification de données linéairement séparables (Gradient)", { AbstractNetworkRunner(
+        GradientLinearClassificationPerceptron()
+    ) }),
+    ADALINELINEARCLASS("Classification de données linéairement séparables (ADALINE)", { AbstractNetworkRunner(
+        AdalineLinearClassificationPerceptron()
+    ) }),
+    GRADIENTNONLINEARCLASS("Classification de données non linéairement séparables (Gradient)", { AbstractNetworkRunner(
+        GradientNonLinearClassificationPerceptron()
+    ) }),
+    ADALINENONLINEARCLASS("Classification de données non linéairement spéarables (ADALINE)", { AbstractNetworkRunner(
+        AdalineNonLinearClassificationPerceptron()
+    ) }),
     GRADIENTLINEARREG("Régression linéaire (GRADIENT)", { AbstractNetworkRunner(GradientLinearRegressionPerceptron()) }),
     ADALINELINEARREG("Régression linéaire (GRADIENT)", { AbstractNetworkRunner(AdalineLinearRegressionPerceptron()) })
     ;

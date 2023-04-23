@@ -1,4 +1,4 @@
-package be.mgx.networks
+package be.mgx.networks.perceptron
 
 import be.mgx.core.*
 import be.mgx.core.math.Matrix
@@ -11,16 +11,16 @@ import picocli.CommandLine.*
 import java.io.File
 import java.io.FileOutputStream
 
-@Command(name = "linear-regression-adaline", abbreviateSynopsis = true)
-class AdalineLinearRegressionPerceptron : IAbstractNetwork {
-    @OptIn(ExperimentalSerializationApi::class)
+@OptIn(ExperimentalSerializationApi::class)
+@Command(name = "linear-classification-adaline", abbreviateSynopsis = true)
+class AdalineLinearClassificationPerceptron: IAbstractNetwork {
     @Command
     override fun init(
         @Option(names = ["-m", "--model"])
         model: File,
     ): Int {
         val network = NeuralNetwork.createNetwork(
-            Layers.createLayer(1, 1, ActivationFunction.LINEAR)
+            Layers.createLayer(2, 1, ActivationFunction.LINEAR)
         )
 
         val fileStream = FileOutputStream(model)
@@ -39,17 +39,17 @@ class AdalineLinearRegressionPerceptron : IAbstractNetwork {
         val network = retrieveNetworkModelFromFile(modelFile)
         val model = retrieveDataFromCsv(dataFile)
 
-        var (X, Y) = model.map { it.chunked(1) }
+        var (X, Y) = model.map { it.chunked(2) }
             .transpose()
 
-        X = X.map { x -> listOf(1.0) + x } // Prepend 1.0 to make the matrix a 1x2 input matrix
+        X = X.map { x -> listOf(1.0) + x } // Prepend 1.0 to make the matrix a 1x3 input matrix
 
         network.train(
-            X.map { x -> Matrix.createMatrix(1, 2) { x } },
+            X.map { x -> Matrix.createMatrix(1, 3) { x } },
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
-            .00014,
-            ErrorFunctions.simpleGradientError(X.size),
-            StopFunctions.iterationStopFunction(8034),
+            0.012,
+            ErrorFunctions.simpleGradientError(1),
+            StopFunctions.iterationStopFunction(92),
             listOf(saveLayerWeights)
         )
 
@@ -58,17 +58,18 @@ class AdalineLinearRegressionPerceptron : IAbstractNetwork {
         val inputs = mutableListOf<ArrayList<Double>>()
 
         for (arrayList in model) {
-            val newArrayList = arrayListOf(arrayList[0], arrayList[1])
+            val newArrayList = arrayListOf(arrayList[0], arrayList[1], arrayList[2])
             inputs.add(newArrayList)
         }
 
         val graphBuilder = GraphBuilder(
-            GraphTypes.ANDPERCEPTRONGRAD,
+            GraphTypes.LINEARSEPARATIONADALINE,
             network.metricData.get("layerWeights")!!,
             inputs)
         graphBuilder.drawGraph()
 
         readlnOrNull()
+
 
         return 0
     }

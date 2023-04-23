@@ -1,9 +1,6 @@
 package be.mgx
 
-import be.mgx.ui.AbstractCommandRunner
-import be.mgx.ui.ICommandEnum
-import be.mgx.ui.LessonExample
-import be.mgx.ui.Perceptrons
+import be.mgx.ui.*
 import picocli.CommandLine
 import picocli.CommandLine.Command
 import kotlin.system.exitProcess
@@ -17,7 +14,8 @@ fun main(args: Array<String>) {
 @Command(
     name = "neutron",
     subcommands = [
-        Perceptrons::class
+        Perceptrons::class,
+        MonoLayers::class
     ]
 )
 object App: AbstractCommandRunner<AppCommands, LessonExample>(AppCommands::class.java)
@@ -27,7 +25,7 @@ enum class AppCommands(
     override val commandClassProvider: () -> LessonExample
 ): ICommandEnum<LessonExample> {
     PERCEPTRON("Perceptron", { Perceptrons }),
-    // MONO("Perceptron monocouche"),
+    MONO("Perceptron monocouche", { MonoLayers }),
     // MULTI("Perceptron multicouche")
     ;
 
