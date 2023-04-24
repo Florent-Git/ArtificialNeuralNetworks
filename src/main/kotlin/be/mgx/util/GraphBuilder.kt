@@ -485,28 +485,24 @@ class GraphBuilder(
         var points = 0
         var i = -2.5
         while (i < 2.5) {
-            var j = -2.5
-            while (j < 2.5) {
-                val input = Matrix.createMatrix(1, 2)
-                input[0, 0] = 1.0
-                input[0, 1] = i
-                //input[0, 2] = j
-                val output = network.fire(input)
+            val input = Matrix.createMatrix(1, 2)
+            input[0, 0] = 1.0
+            input[0, 1] = i
+            //input[0, 2] = j
+            val output = network.fire(input)
 
-                addPoint("$i$j", i, output[0,0])
-                renderer.setSeriesPaint(points, Color.RED)
-                renderer.setSeriesShape(points, Rectangle(0, 0, 3, 3))
+            addPoint("$i$points", i, output[0,0])
+            renderer.setSeriesPaint(points, Color.RED)
+            renderer.setSeriesShape(points, Rectangle(0, 0, 3, 3))
 
-                j += 0.05.toDouble()
-                points++
-            }
+            points++
             i += 0.05
         }
 
         for ((pointsIt, input) in inputs.withIndex()) {
             addPoint("Point $pointsIt", input[0], input[1])
             renderer.setSeriesPaint(points, Color.BLACK)
-            renderer.setSeriesShape(pointsIt+1, Ellipse2D.Double(0.0, 0.0, 10.0, 10.0))
+            renderer.setSeriesShape(points, Ellipse2D.Double(0.0, 0.0, 10.0, 10.0))
         }
 
         chartDomain[0][0] = -2.0
