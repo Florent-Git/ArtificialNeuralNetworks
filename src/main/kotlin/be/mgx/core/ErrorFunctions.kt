@@ -92,7 +92,7 @@ object ErrorFunctions {
                     val lastLayer = layers.last()
                     val lastDf = lastLayer.fn::invokeDerivative
 
-                    val delta = (expected - result.outputs.last()).hadamard(
+                    val delta = (result.outputs.last() - expected).hadamard(
                         lastDf(result.outputs[i - 1] * lastLayer.weights)
                     )
                     deltaList.add(i, delta)
