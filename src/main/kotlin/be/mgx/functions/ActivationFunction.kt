@@ -15,7 +15,8 @@ enum class ActivationFunction(
 ): AbstractFunction {
     RELU({ if (it >= 0) 1.0 else 0.0 }),
     LINEAR({ it }, df = { 1.0 }),
-    SIGMOID({ 1.0 / (1 + Math.E.pow(-it)) }, df = { Math.E.pow(-it) / (Math.E.pow(-it) + 1).pow(2) });
+    SIGMOID({ 1.0 / (1 + Math.E.pow(-it)) }, df = { Math.E.pow(-it) / (Math.E.pow(-it) + 1).pow(2) }),
+    TANH({ kotlin.math.tanh(it) }, df = { 1.0 / kotlin.math.cosh(it) * kotlin.math.cosh(it) });
 
     override operator fun invoke(input: Matrix): Matrix {
         val result = Matrix.createMatrix(input.rows, input.cols)

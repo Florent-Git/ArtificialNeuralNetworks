@@ -65,7 +65,7 @@ fun meanSquareError(): MetricCallback {
 
             val meanSquaredError = tempList.average()
             mse.add(meanSquaredError)
-            LOG.info("MSE: $meanSquaredError")
+            LOG.debug("MSE: $meanSquaredError")
         }
     }
 }

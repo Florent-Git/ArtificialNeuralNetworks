@@ -23,8 +23,8 @@ class NonLinearRegression: IAbstractNetwork {
     ): Int {
         val random = Random() // 1234 is for testing purposes
         val network = NeuralNetwork.createNetwork(
-            Layers.createLayer(1, 10, ActivationFunction.SIGMOID) { random.nextGaussian() },
-            Layers.createLayer(10, 1, ActivationFunction.SIGMOID) { random.nextGaussian() }
+            Layers.createLayer(1, 10, ActivationFunction.TANH) { random.nextGaussian() },
+            Layers.createLayer(10, 1, ActivationFunction.TANH) { random.nextGaussian() }
         )
 
         val fileStream = FileOutputStream(model)
@@ -50,11 +50,11 @@ class NonLinearRegression: IAbstractNetwork {
         network.train(
             X.map { x -> Matrix.createMatrix(1, 2) { x } },
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
-            0.8,
+            0.001,
             ErrorFunctions.gradientError(),
-            StopFunctions.iterationStopFunction(2000),
+            StopFunctions.iterationStopFunction(1000),
             listOf(saveLayerWeights, meanSquareError()),
-            X.size
+            1
         )
 
         saveNetworkModelToFile(network, modelFile)
