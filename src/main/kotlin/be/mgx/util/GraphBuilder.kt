@@ -421,13 +421,13 @@ class GraphBuilder(
             addPoint("Point $pointsIt", input[0], input[1])
             if (input[2] == 2.0) {
                 // Class A
-                renderer.setSeriesPaint(pointsIt+1, Color.BLUE)
+                renderer.setSeriesPaint(points, Color.BLUE)
             } else {
                 // Class B
-                renderer.setSeriesPaint(pointsIt+1, Color.RED)
+                renderer.setSeriesPaint(points, Color.RED)
             }
-            renderer.setSeriesShape(pointsIt+1, Ellipse2D.Double(0.0, 0.0, 10.0, 10.0))
-            it++
+            renderer.setSeriesShape(points, Ellipse2D.Double(0.0, 0.0, 10.0, 10.0))
+            points++
         }
 
         chartDomain[0][0] = -2.0
@@ -461,6 +461,9 @@ class GraphBuilder(
                     renderer.setSeriesPaint(points, Color.ORANGE)
                 } else if (output[0, 2] >= 0.8 && output[0, 1] < 0.2 && output[0, 1] < 0.2)
                     renderer.setSeriesPaint(points, Color.RED)
+                else {
+                    renderer.setSeriesPaint(points, Color.WHITE)
+                }
 
                 renderer.setSeriesShape(points, Rectangle(0, 0, 3, 3))
 
@@ -468,6 +471,20 @@ class GraphBuilder(
                 points++
             }
             i += 0.05
+        }
+
+        // Draw points
+        for ((pointsIt, input) in inputs.withIndex()) {
+            addPoint("Point $pointsIt", input[0], input[1])
+            if (input[2] == 2.0) {
+                // Class A
+                renderer.setSeriesPaint(points, Color.BLUE)
+            } else {
+                // Class B
+                renderer.setSeriesPaint(points, Color.RED)
+            }
+            renderer.setSeriesShape(points, Ellipse2D.Double(0.0, 0.0, 10.0, 10.0))
+            points++
         }
 
         chartDomain[0][0] = -2.5
@@ -478,7 +495,6 @@ class GraphBuilder(
         return buildChart(renderer, "Three class non-linear classification")
     }
 
-    //TODO
     private fun nonLinearRegression(): JFreeChart {
         val renderer = XYLineAndShapeRenderer()
 
