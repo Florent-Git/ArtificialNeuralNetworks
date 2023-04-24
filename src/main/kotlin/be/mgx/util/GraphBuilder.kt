@@ -493,7 +493,7 @@ class GraphBuilder(
 
             addPoint("$i$points", i, output[0,0])
             renderer.setSeriesPaint(points, Color.RED)
-            renderer.setSeriesShape(points, Rectangle(0, 0, 3, 3))
+            renderer.setSeriesShape(points, Ellipse2D.Double(0.0, 0.0, 5.0, 5.0))
 
             points++
             i += 0.05
@@ -502,7 +502,8 @@ class GraphBuilder(
         for ((pointsIt, input) in inputs.withIndex()) {
             addPoint("Point $pointsIt", input[0], input[1])
             renderer.setSeriesPaint(points, Color.BLACK)
-            renderer.setSeriesShape(points, Ellipse2D.Double(0.0, 0.0, 10.0, 10.0))
+            renderer.setSeriesShape(points, Rectangle(0, 0, 5, 5))
+            points++
         }
 
         chartDomain[0][0] = -2.0
