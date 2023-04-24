@@ -85,7 +85,7 @@ class NeuralNetwork private constructor(private val layers: List<Layer>) {
             }
 
             iteration++
-        } while (!stopConditionFunction())
+        } while (!this.stopConditionFunction(iteration))
     }
 
     companion object Factory {

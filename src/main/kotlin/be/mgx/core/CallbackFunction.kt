@@ -23,7 +23,7 @@ private fun verifyFields(data: MetricNetworkData, vararg fields: String) {
     val anyNullField = MetricNetworkData::class.memberProperties
         .filter { fields.contains(it.name) }
         .map { Pair(it.name, it.get(data)) }
-        .filter { it.second == null  }
+        .filter { it.second == null }
 
     if (anyNullField.isNotEmpty()) {
         val emptyFields = anyNullField.map { it.first }.reduce { acc, s -> "$acc, $s" }
@@ -67,5 +67,16 @@ fun meanSquareError(): MetricCallback {
             mse.add(meanSquaredError)
             LOG.info("MSE: $meanSquaredError")
         }
+    }
+}
+
+val errorCount: MetricCallback = { data ->
+    if (this.metricData.get<Int>("errorCount") == null) {
+        this.metricData.set("errorCount", 0)
+    }
+
+    if ((data.expectedOutput - data.actualOutput).toScalar() != 0.0) {
+        val errorCount = this.metricData.get<Int>("errorCount")
+        this.metricData.set("errorCount", errorCount!! + 1)
     }
 }

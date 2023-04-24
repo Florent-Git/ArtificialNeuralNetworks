@@ -49,8 +49,9 @@ class BasicAndPerceptron : IAbstractNetwork {
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
             1.0,
             ErrorFunctions.basicErrorFunction(),
-            StopFunctions.iterationStopFunction(6),
-            listOf(saveLayerWeights, meanSquareError())
+            StopFunctions.stopWhenErrorCountIs { it == 0 },
+            listOf(saveLayerWeights, errorCount),
+            4
         )
 
         saveNetworkModelToFile(network, modelFile)

@@ -49,7 +49,7 @@ class GradientAndPerceptron : IAbstractNetwork {
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
             .2,
             ErrorFunctions.simpleGradientError(X.size),
-            StopFunctions.iterationStopFunction(49),
+            StopFunctions.stopWhenMseIs(100) { it < 0.1250012 },
             listOf(saveLayerWeights, meanSquareError()),
             X.size
         )
