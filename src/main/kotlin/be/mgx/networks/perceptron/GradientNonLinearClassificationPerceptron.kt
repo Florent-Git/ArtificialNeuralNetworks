@@ -71,7 +71,7 @@ class GradientNonLinearClassificationPerceptron: IAbstractNetwork {
         )
         graphBuilder.drawGraph()
 
-        readlnOrNull()
+        graphBuilder.isWindowClosed.join()
 
         return 0
     }

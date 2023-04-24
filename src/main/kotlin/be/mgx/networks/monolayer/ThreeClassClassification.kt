@@ -74,7 +74,7 @@ class ThreeClassClassification : IAbstractNetwork {
             network)
         graphBuilder.drawGraph()
 
-        readlnOrNull()
+        graphBuilder.isWindowClosed.join()
 
         return 0
     }

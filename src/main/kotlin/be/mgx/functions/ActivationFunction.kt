@@ -7,12 +7,15 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlin.math.pow
 
 enum class ActivationFunction(
-    private val fn: (Double) -> Double
+    private val fn: (Double) -> Double,
+    private val df: (ActivationFunction.(Double) -> Double)? = null
 ): AbstractFunction {
     RELU({ if (it >= 0) 1.0 else 0.0 }),
-    LINEAR({ it });
+    LINEAR({ it }, df = { 1.0 }),
+    SIGMOID({ 1.0 / (1 + Math.E.pow(-it)) }, df = { Math.E.pow(-it) / (Math.E.pow(-it) + 1).pow(2) });
 
     override operator fun invoke(input: Matrix): Matrix {
         val result = Matrix.createMatrix(input.rows, input.cols)
@@ -23,6 +26,18 @@ enum class ActivationFunction(
             }
         }
 
+        return result
+    }
+
+    fun invokeDerivative(input: Matrix): Matrix {
+        val result = input.copy()
+
+        for (i in 0 until result.rows) {
+            for (j in 0 until result.cols) {
+                result[i, j] = df?.let { it(input[i, j]) }
+                    ?: throw IllegalStateException("The function $name does not have a derivative")
+            }
+        }
         return result
     }
 }

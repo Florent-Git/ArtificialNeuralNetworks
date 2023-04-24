@@ -11,13 +11,40 @@ class NeuralNetwork private constructor(private val layers: List<Layer>) {
     val metricData: MetricData = MetricData()
 
     fun fire(input: Matrix): Matrix {
+        val output = _fire(input).outputs.last()
+        LOG.trace(
+            "For input {}, outputted {}",
+            input.toString().trim(),
+            output.toString().trim()
+        )
+        return output
+    }
+
+    private fun _fire(input: Matrix): NeuralNetworkResult {
+        val potentials = mutableListOf<Matrix>()
+        val outputs = mutableListOf<Matrix>()
+
         var currentLayer: Matrix = input
 
-        for (layer in layers) {
-            currentLayer = layer.fn(currentLayer * layer.weights)
-        }
+        val layerIterator = layers.iterator()
 
-        return currentLayer
+        for (layer in layerIterator) {
+            val potential = currentLayer * layer.weights
+            potentials.add(potential)
+
+            currentLayer = if (layerIterator.hasNext()) {
+                val output = Matrix.createMatrix(potential.rows, potential.cols + 1) {
+                    listOf(1.0) + layer.fn(potential).array
+                }
+                outputs.add(output)
+                output
+            } else {
+                val output = layer.fn(currentLayer * layer.weights)
+                outputs.add(output)
+                output
+            }
+        }
+        return NeuralNetworkResult(potentials, outputs)
     }
 
     fun train(
@@ -37,16 +64,15 @@ class NeuralNetwork private constructor(private val layers: List<Layer>) {
             var batchCount = 0
 
             for ((input, expectedOutput) in inputOutput) {
-                val output = fire(input)
-                LOG.trace("For input ${input.toString().trim()}, outputted ${output.toString().trim()} (expected ${expectedOutput.toString().trim()})")
+                val result = _fire(input)
 
-                this.errorFunction(expectedOutput, output, input, layers, learningRate, batchCount)
+                this.errorFunction(expectedOutput, result, input, layers, learningRate, batchCount)
                 metricCallbackFunctions.forEach { fn -> this.fn(
                     MetricNetworkData(
                         inputs,
                         input,
                         expectedOutputs,
-                        output,
+                        result.outputs.last(),
                         expectedOutput,
                         layers,
                         batchCount,

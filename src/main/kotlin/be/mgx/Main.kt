@@ -15,7 +15,8 @@ fun main(args: Array<String>) {
     name = "neutron",
     subcommands = [
         Perceptrons::class,
-        MonoLayers::class
+        MonoLayers::class,
+        MultiLayers::class
     ]
 )
 object App: AbstractCommandRunner<AppCommands, LessonExample>(AppCommands::class.java)

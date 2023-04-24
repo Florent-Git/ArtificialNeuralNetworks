@@ -4,8 +4,6 @@ import be.mgx.core.math.Matrix
 import be.mgx.functions.ActivationFunction
 import be.mgx.functions.ActivationFunctionSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 @Serializable
 data class Layer(
@@ -23,12 +21,4 @@ object Layers {
     ): Layer {
         return Layer(Matrix.createMatrix(nbOfInput + 1, nbOfOutput) { size -> List(size, weightsInit) }, fn)
     }
-}
-
-fun main() {
-    val matrix = Matrix.createMatrix(2, 3) { listOf(1.0, 2.0, 3.0, 4.0, 5.0, 6.0) }
-    println(Json.encodeToString<Matrix>(matrix))
-
-    val layers = Layer(matrix, ActivationFunction.RELU)
-    println(Json.encodeToString(layers))
 }

@@ -14,7 +14,9 @@ import org.jfree.data.xy.XYSeriesCollection
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Rectangle
+import java.awt.event.WindowAdapter
 import java.awt.geom.Ellipse2D
+import java.util.concurrent.CompletableFuture
 import kotlin.math.pow
 
 class GraphBuilder(
@@ -23,6 +25,8 @@ class GraphBuilder(
     private val inputs: MutableList<ArrayList<Double>>,
     private val network: NeuralNetwork
 ) {
+    val isWindowClosed: CompletableFuture<Int> = CompletableFuture()
+
     private val dataset = XYSeriesCollection()
     private val chartDomain = arrayOf(
         doubleArrayOf(0.0, 10.0),
@@ -53,6 +57,8 @@ class GraphBuilder(
         val chartFrame = ChartFrame("Neural Network Lab", chart)
         chartFrame.pack()
         chartFrame.isVisible = true
+
+        chartFrame.addWindowListener(WindowAdapterImpl(isWindowClosed))
     }
 
     private fun drawSimpleANDPerceptron(): JFreeChart {

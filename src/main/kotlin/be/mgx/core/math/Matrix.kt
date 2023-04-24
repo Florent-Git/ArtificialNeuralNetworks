@@ -77,6 +77,7 @@ data class Matrix(
 
     override fun toString(): String {
         val str = StringBuilder()
+            .append("[${rows}x${cols}] ")
         for (i in 0 until rows) {
             for (j in 0 until cols) {
                 str.append(this[i, j])
@@ -96,6 +97,17 @@ data class Matrix(
             }
         }
 
+        return result
+    }
+
+    fun hadamard(mat: Matrix): Matrix {
+        if (mat.cols != this.cols || mat.rows != this.rows)
+            throw IllegalArgumentException("Cannot apply Hadamard from a ${rows}x${cols} matrix to a ${mat.rows}x${mat.cols} matrix")
+        val result = copy()
+        result._array = this._array
+            .zip(mat._array)
+            .map { (x1, x2) -> x1 * x2 }
+            .toMutableList()
         return result
     }
 

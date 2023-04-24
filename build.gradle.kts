@@ -70,7 +70,8 @@ enum class Types(
     LINEAR_REGRESSION_GRADIENT("table_2_11.csv", Lesson.PERCEPTRON, "10"),
     LINEAR_REGRESSION_ADALINE("table_2_11.csv", Lesson.PERCEPTRON, "10"),
     THREE_CLASS("table_3_1.csv", Lesson.PERCEPTRON_MONO, "-1, 3"),
-    FOUR_CLASS("table_3_5.csv", Lesson.PERCEPTRON_MONO, "1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,1")
+    FOUR_CLASS("table_3_5.csv", Lesson.PERCEPTRON_MONO, "1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,1"),
+    XOR_MULTI("table_4_3.csv", Lesson.PERCEPTRON_MULTI, "1, 0")
     ;
 
     override fun toString(): String {
