@@ -14,8 +14,8 @@ import java.util.Random
 
 
 @OptIn(ExperimentalSerializationApi::class)
-@CommandLine.Command(name = "xor-multi", abbreviateSynopsis = true)
-class XorMultiPerceptron: IAbstractNetwork {
+@CommandLine.Command(name = "multi-nonlinear-classification-two-class", abbreviateSynopsis = true)
+class TwoClassMultiNonLinear: IAbstractNetwork {
     @CommandLine.Command
     override fun init(
         @CommandLine.Option(names = ["-m", "--model"])
@@ -23,8 +23,8 @@ class XorMultiPerceptron: IAbstractNetwork {
     ): Int {
         val random = Random() // 1234 is for testing purposes
         val network = NeuralNetwork.createNetwork(
-            Layers.createLayer(2, 2, ActivationFunction.SIGMOID) { random.nextGaussian() },
-            Layers.createLayer(2, 1, ActivationFunction.SIGMOID) { random.nextGaussian() }
+            Layers.createLayer(2, 20, ActivationFunction.SIGMOID) { random.nextGaussian() },
+            Layers.createLayer(20, 1, ActivationFunction.SIGMOID) { random.nextGaussian() }
         )
 
         val fileStream = FileOutputStream(model)
@@ -71,7 +71,7 @@ class XorMultiPerceptron: IAbstractNetwork {
         }
 
         val graphBuilder = GraphBuilder(
-            GraphTypes.XOROPERATOR,
+            GraphTypes.TWOCLASSNONLINEAR,
             network.metricData.get("layerWeights")!!,
             inputs,
             network)

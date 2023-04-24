@@ -334,34 +334,33 @@ class GraphBuilder(
         return buildChart(renderer, "Three class classification")
     }
 
-    //TODO
     private fun operatorXOR(): JFreeChart {
         val renderer = XYLineAndShapeRenderer()
 
         var points = 0
-        var i = -10.0
-        while (i < 10.0) {
-            var j = -10.0
-            while (j < 10.0) {
+        var i = -0.5
+        while (i < 1.5) {
+            var j = -0.5
+            while (j < 1.5) {
                 addPoint("$i$j", i, j)
 
                 val input = Matrix.createMatrix(1, 3)
-                input[0, 1] = 1.0
+                input[0, 0] = 1.0
                 input[0, 1] = i
                 input[0, 2] = j
-                var output = network.fire(input)
+                val output = network.fire(input)
 
                 if (output[0, 0] >= 0.5) {
                     renderer.setSeriesPaint(points, Color.GREEN)
                 } else {
-                    renderer.setSeriesPaint(points, Color.YELLOW)
+                    renderer.setSeriesPaint(points, Color.ORANGE)
                 }
                 renderer.setSeriesShape(points, Rectangle(0, 0, 3, 3))
 
-                j += 0.2.toDouble()
+                j += 0.025.toDouble()
                 points++
             }
-            i += 0.2
+            i += 0.025
         }
 
         // Draw points
@@ -378,19 +377,103 @@ class GraphBuilder(
             }
         }
 
+        chartDomain[0][0] = -1.0
+        chartDomain[0][1] = 2.0
+        chartDomain[1][0] = -1.0
+        chartDomain[1][1] = 2.0
+
         return buildChart(renderer, "XOR operator")
     }
 
     //TODO
     private fun twoClassNonLinear(): JFreeChart {
         val renderer = XYLineAndShapeRenderer()
+        var it = 0
+
+        var points = 0
+        var i = -2.0
+        while (i < 2.0) {
+            var j = -2.0
+            while (j < 2.0) {
+                addPoint("$i$j", i, j)
+
+                val input = Matrix.createMatrix(1, 3)
+                input[0, 0] = 1.0
+                input[0, 1] = i
+                input[0, 2] = j
+                val output = network.fire(input)
+
+                if (output[0, 0] >= 0.5) {
+                    renderer.setSeriesPaint(points, Color.GREEN)
+                } else {
+                    renderer.setSeriesPaint(points, Color.ORANGE)
+                }
+                renderer.setSeriesShape(points, Rectangle(0, 0, 3, 3))
+
+                j += 0.025.toDouble()
+                points++
+            }
+            i += 0.05
+        }
+
+        // Draw points
+        for ((pointsIt, input) in inputs.withIndex()) {
+            addPoint("Point $pointsIt", input[0], input[1])
+            if (input[2] == 2.0) {
+                // Class A
+                renderer.setSeriesPaint(pointsIt+1, Color.BLUE)
+            } else {
+                // Class B
+                renderer.setSeriesPaint(pointsIt+1, Color.RED)
+            }
+            renderer.setSeriesShape(pointsIt+1, Ellipse2D.Double(0.0, 0.0, 10.0, 10.0))
+            it++
+        }
+
+        chartDomain[0][0] = -2.0
+        chartDomain[0][1] = 2.0
+        chartDomain[1][0] = -2.0
+        chartDomain[1][1] = 2.0
 
         return buildChart(renderer, "Two class non-linear classification")
     }
 
-    //TODO
     private fun threeClassNonLinear(): JFreeChart {
         val renderer = XYLineAndShapeRenderer()
+        val it = 0
+
+        var points = 0
+        var i = -2.5
+        while (i < 2.5) {
+            var j = -2.5
+            while (j < 2.5) {
+                addPoint("$i$j", i, j)
+
+                val input = Matrix.createMatrix(1, 3)
+                input[0, 0] = 1.0
+                input[0, 1] = i
+                input[0, 2] = j
+                val output = network.fire(input)
+
+                if (output[0, 0] >= 0.8 && output[0, 1] < 0.2 && output[0, 2] < 0.2) {
+                    renderer.setSeriesPaint(points, Color.GREEN)
+                } else if (output[0, 1] >= 0.8 && output[0, 0] < 0.2 && output[0, 2] < 0.2) {
+                    renderer.setSeriesPaint(points, Color.ORANGE)
+                } else if (output[0, 2] >= 0.8 && output[0, 1] < 0.2 && output[0, 1] < 0.2)
+                    renderer.setSeriesPaint(points, Color.RED)
+
+                renderer.setSeriesShape(points, Rectangle(0, 0, 3, 3))
+
+                j += 0.05.toDouble()
+                points++
+            }
+            i += 0.05
+        }
+
+        chartDomain[0][0] = -2.5
+        chartDomain[0][1] = 2.5
+        chartDomain[1][0] = -2.5
+        chartDomain[1][1] = 2.5
 
         return buildChart(renderer, "Three class non-linear classification")
     }
@@ -399,15 +482,37 @@ class GraphBuilder(
     private fun nonLinearRegression(): JFreeChart {
         val renderer = XYLineAndShapeRenderer()
 
-        val series = XYSeries("Power[x,3]-2x")
+        var points = 0
+        var i = -2.5
+        while (i < 2.5) {
+            var j = -2.5
+            while (j < 2.5) {
+                val input = Matrix.createMatrix(1, 2)
+                input[0, 0] = 1.0
+                input[0, 1] = i
+                //input[0, 2] = j
+                val output = network.fire(input)
 
-        for (i in -100..100) {
-            val x = i.toDouble() / 10.0
-            val y = x.pow(3) - 2 * x
-            series.add(x, y)
+                addPoint("$i$j", i, output[0,0])
+                renderer.setSeriesPaint(points, Color.RED)
+                renderer.setSeriesShape(points, Rectangle(0, 0, 3, 3))
+
+                j += 0.05.toDouble()
+                points++
+            }
+            i += 0.05
         }
 
-        dataset.addSeries(series)
+        for ((pointsIt, input) in inputs.withIndex()) {
+            addPoint("Point $pointsIt", input[0], input[1])
+            renderer.setSeriesPaint(points, Color.BLACK)
+            renderer.setSeriesShape(pointsIt+1, Ellipse2D.Double(0.0, 0.0, 10.0, 10.0))
+        }
+
+        chartDomain[0][0] = -2.0
+        chartDomain[0][1] = 2.0
+        chartDomain[1][0] = -2.0
+        chartDomain[1][1] = 2.0
 
         return buildChart(renderer, "Non linear regression")
     }

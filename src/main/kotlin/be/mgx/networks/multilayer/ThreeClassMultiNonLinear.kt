@@ -14,8 +14,8 @@ import java.util.Random
 
 
 @OptIn(ExperimentalSerializationApi::class)
-@CommandLine.Command(name = "xor-multi", abbreviateSynopsis = true)
-class XorMultiPerceptron: IAbstractNetwork {
+@CommandLine.Command(name = "multi-nonlinear-classification-three-class", abbreviateSynopsis = true)
+class ThreeClassMultiNonLinear: IAbstractNetwork {
     @CommandLine.Command
     override fun init(
         @CommandLine.Option(names = ["-m", "--model"])
@@ -23,8 +23,8 @@ class XorMultiPerceptron: IAbstractNetwork {
     ): Int {
         val random = Random() // 1234 is for testing purposes
         val network = NeuralNetwork.createNetwork(
-            Layers.createLayer(2, 2, ActivationFunction.SIGMOID) { random.nextGaussian() },
-            Layers.createLayer(2, 1, ActivationFunction.SIGMOID) { random.nextGaussian() }
+            Layers.createLayer(2, 20, ActivationFunction.SIGMOID) { random.nextGaussian() },
+            Layers.createLayer(20, 3, ActivationFunction.SIGMOID) { random.nextGaussian() }
         )
 
         val fileStream = FileOutputStream(model)
@@ -52,7 +52,7 @@ class XorMultiPerceptron: IAbstractNetwork {
         X = X.map { x -> listOf(1.0) + x }
         network.train(
             X.map { x -> Matrix.createMatrix(1, 3) { x } },
-            Y.map { y -> Matrix.createMatrix(1, 1) { y } },
+            Y.map { y -> Matrix.createMatrix(1, 3) { y } },
             0.8,
             ErrorFunctions.gradientError(),
             StopFunctions.iterationStopFunction(2000),
@@ -71,7 +71,7 @@ class XorMultiPerceptron: IAbstractNetwork {
         }
 
         val graphBuilder = GraphBuilder(
-            GraphTypes.XOROPERATOR,
+            GraphTypes.THREECLASSNONLINEAR,
             network.metricData.get("layerWeights")!!,
             inputs,
             network)

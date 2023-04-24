@@ -14,8 +14,8 @@ import java.util.Random
 
 
 @OptIn(ExperimentalSerializationApi::class)
-@CommandLine.Command(name = "xor-multi", abbreviateSynopsis = true)
-class XorMultiPerceptron: IAbstractNetwork {
+@CommandLine.Command(name = "multi-nonlinear-regression", abbreviateSynopsis = true)
+class NonLinearRegression: IAbstractNetwork {
     @CommandLine.Command
     override fun init(
         @CommandLine.Option(names = ["-m", "--model"])
@@ -23,8 +23,8 @@ class XorMultiPerceptron: IAbstractNetwork {
     ): Int {
         val random = Random() // 1234 is for testing purposes
         val network = NeuralNetwork.createNetwork(
-            Layers.createLayer(2, 2, ActivationFunction.SIGMOID) { random.nextGaussian() },
-            Layers.createLayer(2, 1, ActivationFunction.SIGMOID) { random.nextGaussian() }
+            Layers.createLayer(1, 10, ActivationFunction.SIGMOID) { random.nextGaussian() },
+            Layers.createLayer(10, 1, ActivationFunction.SIGMOID) { random.nextGaussian() }
         )
 
         val fileStream = FileOutputStream(model)
@@ -43,15 +43,12 @@ class XorMultiPerceptron: IAbstractNetwork {
         val network = retrieveNetworkModelFromFile(modelFile)
         val model = retrieveDataFromCsv(dataFile)
 
-        var (X, Y) = model.transpose()
-            .withIndex()
-            .groupBy { it.index <= 1 }
-            .map { it.value.map { v -> v.value } }
-            .map { it.transpose() }
+        var (X, Y) = model.map { it.chunked(1) }
+            .transpose()
 
         X = X.map { x -> listOf(1.0) + x }
         network.train(
-            X.map { x -> Matrix.createMatrix(1, 3) { x } },
+            X.map { x -> Matrix.createMatrix(1, 2) { x } },
             Y.map { y -> Matrix.createMatrix(1, 1) { y } },
             0.8,
             ErrorFunctions.gradientError(),
@@ -71,7 +68,7 @@ class XorMultiPerceptron: IAbstractNetwork {
         }
 
         val graphBuilder = GraphBuilder(
-            GraphTypes.XOROPERATOR,
+            GraphTypes.NONLINEARREGRESSION,
             network.metricData.get("layerWeights")!!,
             inputs,
             network)

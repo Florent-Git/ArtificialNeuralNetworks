@@ -45,8 +45,8 @@ enum class Lesson {
 
 enum class Operations {
     INIT,
-    TRAIN,
-    EXECUTE;
+    TRAIN;
+//    EXECUTE;
 
     override fun toString(): String {
         return super.toString()
@@ -71,7 +71,10 @@ enum class Types(
     LINEAR_REGRESSION_ADALINE("table_2_11.csv", Lesson.PERCEPTRON, "10"),
     THREE_CLASS("table_3_1.csv", Lesson.PERCEPTRON_MONO, "-1, 3"),
     FOUR_CLASS("table_3_5.csv", Lesson.PERCEPTRON_MONO, "1,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,1"),
-    XOR_MULTI("table_4_3.csv", Lesson.PERCEPTRON_MULTI, "1, 0")
+    XOR_MULTI("table_4_3.csv", Lesson.PERCEPTRON_MULTI, "1, 0"),
+    MULTI_NONLINEAR_CLASSIFICATION_TWO_CLASS("table_4_12.csv", Lesson.PERCEPTRON_MULTI, "1, 0"),
+    MULTI_NONLINEAR_CLASSIFICATION_THREE_CLASS("table_4_14.csv", Lesson.PERCEPTRON_MULTI, "1, 0"),
+    MULTI_NONLINEAR_REGRESSION("table_4_17.csv", Lesson.PERCEPTRON_MULTI, "1, 0")
     ;
 
     override fun toString(): String {
@@ -107,7 +110,7 @@ for (type in Types.values()) {
                 arguments += dataFile
             }
 
-            if (operation == Operations.EXECUTE) arguments += type.exampleInput
+//            if (operation == Operations.EXECUTE) arguments += type.exampleInput
 
             standardInput = System.`in`
             args(arguments)
