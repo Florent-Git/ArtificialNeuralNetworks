@@ -410,7 +410,7 @@ class GraphBuilder(
                 }
                 renderer.setSeriesShape(points, Rectangle(0, 0, 3, 3))
 
-                j += 0.025.toDouble()
+                j += 0.05.toDouble()
                 points++
             }
             i += 0.05
